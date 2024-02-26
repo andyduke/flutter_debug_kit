@@ -1,0 +1,28 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "extensions": {
+    "recommendations": [
+      "Gruntfuggly.triggertaskonsave"
+    ],
+  },
+  "settings": {
+    "triggerTaskOnSave.tasks": {
+      "Build l10n": [
+          "*.arb"
+      ]
+    },
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true,
+      "_temp": true,
+    },
+  },
+}
