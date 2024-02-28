@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:debug_panel/src/theme/utils/state_property.dart';
 import 'package:debug_panel/src/widgets/custom_tabs/custom_tab_controller.dart';
 import 'package:debug_panel/src/widgets/custom_tabs/default_custom_tab_controller.dart';
 import 'package:flutter/gestures.dart';

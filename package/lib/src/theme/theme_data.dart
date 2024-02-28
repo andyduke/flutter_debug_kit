@@ -1,6 +1,7 @@
 import 'dart:io';
-
 import 'package:debug_panel/src/theme/extensions/app_bar_tabs_theme.dart';
+import 'package:debug_panel/src/theme/utils/color_set.dart';
+import 'package:debug_panel/src/widgets/custom_tabs/custom_tabbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -75,12 +76,17 @@ abstract class DebugPanelThemeData {
       extensions: [
         DebugPanelAppBarTabsTheme(
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          tabForeColor: darkScheme.primary,
-          tabBackColor: Colors.transparent,
-          selectedTabForeColor: darkScheme.onPrimary,
-          selectedTabBackColor: darkScheme.primary,
-          hoveredTabForeColor: darkScheme.onPrimaryContainer,
-          hoveredTabBackColor: darkScheme.primaryContainer,
+          colors: CustomTabStateProperty<ColorSet>(
+            ColorSet(foreground: darkScheme.primary, background: Colors.transparent),
+            selected: ColorSet(foreground: darkScheme.onPrimary, background: darkScheme.primary),
+            hovered: ColorSet(foreground: darkScheme.onPrimaryContainer, background: darkScheme.primaryContainer),
+          ),
+          // tabForeColor: darkScheme.primary,
+          // tabBackColor: Colors.transparent,
+          // selectedTabForeColor: darkScheme.onPrimary,
+          // selectedTabBackColor: darkScheme.primary,
+          // hoveredTabForeColor: darkScheme.onPrimaryContainer,
+          // hoveredTabBackColor: darkScheme.primaryContainer,
         ),
       ],
     );
@@ -113,12 +119,17 @@ abstract class DebugPanelThemeData {
       extensions: [
         DebugPanelAppBarTabsTheme(
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          tabForeColor: lightScheme.primary,
-          tabBackColor: Colors.transparent,
-          selectedTabForeColor: lightScheme.onPrimary,
-          selectedTabBackColor: lightScheme.primary,
-          hoveredTabForeColor: lightScheme.onPrimary,
-          hoveredTabBackColor: lightScheme.primary.withOpacity(0.5),
+          colors: CustomTabStateProperty<ColorSet>(
+            ColorSet(foreground: lightScheme.primary, background: Colors.transparent),
+            selected: ColorSet(foreground: lightScheme.onPrimary, background: lightScheme.primary),
+            hovered: ColorSet(foreground: lightScheme.onPrimary, background: lightScheme.primary.withOpacity(0.62)),
+          ),
+          // tabForeColor: lightScheme.primary,
+          // tabBackColor: Colors.transparent,
+          // selectedTabForeColor: lightScheme.onPrimary,
+          // selectedTabBackColor: lightScheme.primary,
+          // hoveredTabForeColor: lightScheme.onPrimary,
+          // hoveredTabBackColor: lightScheme.primary.withOpacity(0.5),
         ),
       ],
     );

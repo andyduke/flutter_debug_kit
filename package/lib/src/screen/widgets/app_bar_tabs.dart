@@ -113,11 +113,13 @@ class AppBarTab extends StatelessWidget {
     final theme = Theme.of(context);
     final tabTheme = theme.extension<DebugPanelAppBarTabsTheme>()!;
 
-    final foreColor = switch (states) {
-      Set<CustomTabState>() when states.contains(CustomTabState.selected) => tabTheme.selectedTabForeColor,
-      Set<CustomTabState>() when states.contains(CustomTabState.hovered) => tabTheme.hoveredTabForeColor,
-      _ => tabTheme.tabForeColor,
-    };
+    // final foreColor = switch (states) {
+    //   Set<CustomTabState>() when states.contains(CustomTabState.selected) => tabTheme.selectedTabForeColor,
+    //   Set<CustomTabState>() when states.contains(CustomTabState.hovered) => tabTheme.hoveredTabForeColor,
+    //   _ => tabTheme.tabForeColor,
+    // };
+
+    final foreColor = tabTheme.colors.resolve(states).foreground;
 
     return Container(
       height: height,
@@ -127,11 +129,12 @@ class AppBarTab extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: ShapeDecoration(
-          color: switch (states) {
-            Set<CustomTabState>() when states.contains(CustomTabState.selected) => tabTheme.selectedTabBackColor,
-            Set<CustomTabState>() when states.contains(CustomTabState.hovered) => tabTheme.hoveredTabBackColor,
-            _ => tabTheme.tabBackColor,
-          },
+          // color: switch (states) {
+          //   Set<CustomTabState>() when states.contains(CustomTabState.selected) => tabTheme.selectedTabBackColor,
+          //   Set<CustomTabState>() when states.contains(CustomTabState.hovered) => tabTheme.hoveredTabBackColor,
+          //   _ => tabTheme.tabBackColor,
+          // },
+          color: tabTheme.colors.resolve(states).background,
           shape: const StadiumBorder(),
         ),
         child: Row(
