@@ -1,6 +1,9 @@
 import 'package:debug_panel/src/controller.dart';
+import 'package:debug_panel/src/floating_button/floating_button_surface.dart';
 import 'package:debug_panel/src/overlay.dart';
+import 'package:debug_panel/src/screen/screen.dart';
 import 'package:debug_panel/src/settings.dart';
+import 'package:debug_panel/src/theme/theme.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
@@ -63,14 +66,41 @@ class DebugPanelState extends State<DebugPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedDebugPanel(
+    // return _InheritedDebugPanel(
+    //   controller: controller,
+    //   child: DebugPanelOverlay(
+    //     controller: controller,
+    //     // builder: widget.settings.buildOverlay,
+    //     builder: (context) => DebugPanelScreen(pages: widget.settings.pages),
+    //     // TODO: Wrap with floating button
+    //     child: widget.child ?? const SizedBox.shrink(),
+    //   ),
+    // );
+
+    final overlay = DebugPanelOverlay(
       controller: controller,
-      child: DebugPanelOverlay(
-        builder: widget.settings.buildOverlay,
-        // TODO: Wrap with floating button
+      // builder: widget.settings.buildOverlay,
+      builder: (context) => DebugPanelTheme(
+        child: DebugPanelScreen(
+          controller: controller,
+          pages: widget.settings.pages,
+        ),
+      ),
+      // TODO: Wrap with floating button
+      child: DebugPanelFloatingButtonSurface(
+        controller: controller,
         child: widget.child ?? const SizedBox.shrink(),
       ),
     );
+
+    if (widget.controller == null) {
+      return DebugPanelDefaultController(
+        controller: controller,
+        child: overlay,
+      );
+    } else {
+      return overlay;
+    }
   }
 }
 
