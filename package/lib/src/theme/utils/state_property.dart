@@ -12,7 +12,7 @@ abstract class StateProperty<T, S> {
     double t,
     T? Function(T?, T?, double) lerpFunction,
   ) {
-    // Avoid creating a StateLerpProperties object for a common case.
+    // Avoid creating a _StateLerpProperties object for a common case.
     if (a == null && b == null) {
       return null;
     }

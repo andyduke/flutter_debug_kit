@@ -1,6 +1,6 @@
 import 'package:debug_panel/debug_panel.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -10,6 +10,8 @@ void main() {
 final themeMode = ValueNotifier(ThemeMode.light);
 
 class MainApp extends StatelessWidget {
+  static final navigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
   const MainApp({super.key});
 
   @override
@@ -17,60 +19,78 @@ class MainApp extends StatelessWidget {
     return ValueListenableBuilder(
         valueListenable: themeMode,
         builder: (context, mode, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: const DemoScreen(),
-            themeMode: mode,
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            builder: (context, child) {
-              return AppDebugPanelScope(
-                child: Providers(
-                  child: AppDebugPanel(
-                    child: child,
+          return AnnotatedRegion(
+            value: (mode == ThemeMode.light)
+                ? const SystemUiOverlayStyle(
+                    statusBarColor: Color(0xFFFFFFFF),
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.light,
+                    systemNavigationBarColor: Color(0xFFFFFFFF),
+                    systemNavigationBarIconBrightness: Brightness.dark,
+                  )
+                : const SystemUiOverlayStyle(
+                    statusBarColor: Color(0xFF000000),
+                    statusBarIconBrightness: Brightness.light,
+                    statusBarBrightness: Brightness.dark,
+                    systemNavigationBarColor: Color(0xFF000000),
+                    systemNavigationBarIconBrightness: Brightness.light,
                   ),
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              navigatorKey: navigatorKey,
+              home: const DemoScreen(),
+              themeMode: mode,
+              theme: ThemeData.light(),
+              darkTheme: ThemeData.dark(),
+              builder: (context, child) {
+                return AppDebugPanelScope(
+                  child: Providers(
+                    child: AppDebugPanel(
+                      child: child,
+                    ),
+                  ),
+                );
+
+                /*
+              return DebugPanel(
+                settings: DebugPanelSettings(
+                  buttonVisible: kDebugMode,
+                  // pages: [
+                  //   DebugPanelAppPage(),
+                  //   ...DebugPanelSettings.defaultPages,
+                  // ],
+                  buildOverlay: (context) {
+                    return TextButton(
+                      onPressed: () {
+                        context.read<AuthState>().logout();
+                      },
+                      child: const Text('Logout'),
+                    );
+                  },
+                ),
+                // builder: (context, child) => Providers(child: child),
+                // child: child,
+                    
+                builder: (context, debugBuilder) => Providers(child: debugBuilder(child)),
+                // builder: (context, debugBuilder) => Providers(child: child ?? const SizedBox.shrink()),
+              );
+              */
+
+                /*
+              return Providers(
+                child: DebugPanelPageBuilder(
+                  id: 'app-page',
+                  title: 'App Page',
+                  builder: (context) => TextButton(
+                    onPressed: () => context.read<AuthState>().logout(),
+                    child: const Text('Custom 1'),
+                  ),
+                  child: child ?? const SizedBox.shrink(),
                 ),
               );
-
-              /*
-            return DebugPanel(
-              settings: DebugPanelSettings(
-                buttonVisible: kDebugMode,
-                // pages: [
-                //   DebugPanelAppPage(),
-                //   ...DebugPanelSettings.defaultPages,
-                // ],
-                buildOverlay: (context) {
-                  return TextButton(
-                    onPressed: () {
-                      context.read<AuthState>().logout();
-                    },
-                    child: const Text('Logout'),
-                  );
-                },
-              ),
-              // builder: (context, child) => Providers(child: child),
-              // child: child,
-        
-              builder: (context, debugBuilder) => Providers(child: debugBuilder(child)),
-              // builder: (context, debugBuilder) => Providers(child: child ?? const SizedBox.shrink()),
-            );
-            */
-
-              /*
-            return Providers(
-              child: DebugPanelPageBuilder(
-                id: 'app-page',
-                title: 'App Page',
-                builder: (context) => TextButton(
-                  onPressed: () => context.read<AuthState>().logout(),
-                  child: const Text('Custom 1'),
-                ),
-                child: child ?? const SizedBox.shrink(),
-              ),
-            );
-            */
-            },
+              */
+              },
+            ),
           );
         });
 
@@ -144,8 +164,10 @@ class AppDebugPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DebugPanel(
+      // navigatorKey: MainApp.navigatorKey,
       settings: DebugPanelSettings(
-        buttonVisible: kDebugMode,
+        // buttonVisible: kDebugMode,
+        buttonVisible: true,
         pages: {
           DebugPanelGeneralPage(
             sections: [
@@ -307,34 +329,39 @@ class DemoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Consumer<AuthState>(
-              builder: (context, value, child) {
-                return Text('Is logged: ${value.isLogged}');
-              },
-            ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Demo'),
+        ),
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Consumer<AuthState>(
+                builder: (context, value, child) {
+                  return Text('Is logged: ${value.isLogged}');
+                },
+              ),
 
-            //
-            const SizedBox(height: 24),
+              //
+              const SizedBox(height: 24),
 
-            const ThemeModeSwitch(),
+              const ThemeModeSwitch(),
 
-            //
-            const SizedBox(height: 24),
+              //
+              const SizedBox(height: 24),
 
-            //
-            ElevatedButton(
-              onPressed: () {
-                DebugPanelController.maybeOf(context)?.open();
-              },
-              child: const Text('Open DebugPanel'),
-            ),
-          ],
+              //
+              ElevatedButton(
+                onPressed: () {
+                  DebugPanelController.maybeOf(context)?.open();
+                },
+                child: const Text('Open DebugPanel'),
+              ),
+            ],
+          ),
         ),
       ),
     );

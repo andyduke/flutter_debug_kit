@@ -217,7 +217,7 @@ class _CustomTabBarViewState extends State<CustomTabBarView> {
     _scrollUnderwayCount += 1;
     final double page = _pageController!.page!;
     if (notification is ScrollUpdateNotification) {
-      final bool pageChanged = (page - _controller!.index).abs() > 1.0;
+      final bool pageChanged = (page - _controller!.index).abs() > 0.6;
       if (pageChanged) {
         _controller!.index = page.round();
         _currentIndex = _controller!.index;

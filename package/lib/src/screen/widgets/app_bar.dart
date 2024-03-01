@@ -1,7 +1,6 @@
 import 'package:debug_panel/src/pages/base_page.dart';
 import 'package:debug_panel/src/screen/widgets/app_bar_tabs.dart';
 import 'package:debug_panel/src/widgets/custom_tabs/custom_tab_controller.dart';
-import 'package:debug_panel/src/widgets/custom_tabs/custom_tabbar.dart';
 import 'package:flutter/material.dart';
 
 class DebugPanelAppBar extends StatelessWidget {
@@ -21,7 +20,7 @@ class DebugPanelAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
 
     return SliverAppBar(
       // Title
@@ -65,6 +64,7 @@ class DebugPanelAppBar extends StatelessWidget {
       snap: false,
       // backgroundColor: Colors.teal,
       scrolledUnderElevation: 0,
+      automaticallyImplyLeading: false,
 
       // Tabs
       bottom: AppBarTabs(

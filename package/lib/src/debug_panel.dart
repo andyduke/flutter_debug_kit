@@ -3,17 +3,19 @@ import 'package:debug_panel/src/floating_button/floating_button_surface.dart';
 import 'package:debug_panel/src/overlay.dart';
 import 'package:debug_panel/src/screen/screen.dart';
 import 'package:debug_panel/src/settings.dart';
-import 'package:debug_panel/src/theme/theme.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 class DebugPanel extends StatefulWidget {
+  // final GlobalKey<NavigatorState> navigatorKey;
   final DebugPanelController? controller;
   final DebugPanelBaseSettings settings;
   final Widget? child;
 
   const DebugPanel({
     super.key,
+    // required this.navigatorKey,
     this.controller,
     this.settings = const DebugPanelSettings(),
     required this.child,
@@ -45,15 +47,33 @@ class DebugPanelState extends State<DebugPanel> {
   }
   */
 
+  // bool _opened = false;
+
   DebugPanelController get controller =>
       _controller ??= widget.controller ?? DebugPanelController(buttonVisible: widget.settings.buttonVisible);
   DebugPanelController? _controller;
+
+  /*
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_controller == null) {
+      controller.addListener(_handleControllerChanges);
+    }
+  }
+  */
 
   @override
   void didUpdateWidget(covariant DebugPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.controller != widget.controller) {
+      /*
+      _controller?.removeListener(_handleControllerChanges);
+      _controller = null;
+      controller.addListener(_handleControllerChanges);
+      */
       _controller = null;
     }
 
@@ -63,6 +83,28 @@ class DebugPanelState extends State<DebugPanel> {
     }
     */
   }
+
+  /*
+  void _handleControllerChanges() {
+    if (_opened != controller.opened) {
+      _opened = controller.opened;
+
+      if (_opened) {
+        // TODO: Open modal route
+        widget.navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (context) => DebugPanelScreen(
+              controller: controller,
+              pages: widget.settings.pages,
+            ),
+          ),
+        );
+      } else {
+        // TODO: Close modal route
+      }
+    }
+  }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -80,11 +122,9 @@ class DebugPanelState extends State<DebugPanel> {
     final overlay = DebugPanelOverlay(
       controller: controller,
       // builder: widget.settings.buildOverlay,
-      builder: (context) => DebugPanelTheme(
-        child: DebugPanelScreen(
-          controller: controller,
-          pages: widget.settings.pages,
-        ),
+      builder: (context) => DebugPanelScreen(
+        controller: controller,
+        pages: widget.settings.pages,
       ),
       // TODO: Wrap with floating button
       child: DebugPanelFloatingButtonSurface(
@@ -92,6 +132,13 @@ class DebugPanelState extends State<DebugPanel> {
         child: widget.child ?? const SizedBox.shrink(),
       ),
     );
+
+    /*
+    final overlay = DebugPanelFloatingButtonSurface(
+      controller: controller,
+      child: widget.child ?? const SizedBox.shrink(),
+    );
+    */
 
     if (widget.controller == null) {
       return DebugPanelDefaultController(

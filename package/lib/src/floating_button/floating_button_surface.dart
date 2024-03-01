@@ -1,5 +1,6 @@
 import 'package:debug_panel/src/controller.dart';
 import 'package:debug_panel/src/floating_button/floating_button.dart';
+import 'package:debug_panel/src/widgets/movable.dart';
 import 'package:flutter/material.dart';
 
 class DebugPanelFloatingButtonSurface extends StatefulWidget {
@@ -36,26 +37,56 @@ class _DebugPanelFloatingButtonSurfaceState extends State<DebugPanelFloatingButt
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        widget.child,
+    // return Stack(
+    //   children: [
+    //     widget.child,
 
-        // Floating button
-        Positioned(
-          top: _top,
-          left: _left,
-          child: Offstage(
-            offstage: !widget.controller.buttonVisible,
+    //     // Floating button
+    //     Positioned(
+    //       top: _top,
+    //       left: _left,
+    //       child: Offstage(
+    //         offstage: !widget.controller.buttonVisible,
 
-            // TODO: Draggable
-            child: DebugPanelFloatingButton(
-              onPressed: () {
-                widget.controller.open();
-              },
-            ),
-          ),
+    //         // TODO: Draggable
+    //         child: DebugPanelFloatingButton(
+    //           onPressed: () {
+    //             widget.controller.open();
+    //           },
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // );
+
+    final screenInsets = widget.controller.buttonVisible ? MediaQuery.viewPaddingOf(context) : EdgeInsets.zero;
+    final screenSize =
+        screenInsets.deflateSize(widget.controller.buttonVisible ? MediaQuery.sizeOf(context) : Size.zero);
+
+    return Movable(
+      enabled: widget.controller.buttonVisible,
+      position: Offset(
+        (screenSize.width - DebugPanelFloatingButton.buttonSize - 16).clamp(20, double.maxFinite),
+        (screenSize.height * 0.8) - (DebugPanelFloatingButton.buttonSize / 2).clamp(20, double.maxFinite),
+      ),
+      size: const Size(DebugPanelFloatingButton.buttonSize, DebugPanelFloatingButton.buttonSize), // TODO: DEBUG
+      bounds: Rect.fromLTWH(screenInsets.left, screenInsets.top, screenSize.width, screenSize.height),
+      onMoveEnd: (position) {
+        // TODO: Save movable position
+        print('Moved to: $position');
+      },
+      // onPressed: () {
+      //   widget.controller.open();
+      // },
+      movable: Offstage(
+        offstage: !widget.controller.buttonVisible,
+        child: DebugPanelFloatingButton(
+          onPressed: () {
+            widget.controller.open();
+          },
         ),
-      ],
+      ),
+      child: widget.child,
     );
   }
 }

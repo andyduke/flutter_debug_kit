@@ -6,10 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DebugPanelPalette {
+  final Color appBarBackground;
   final Color accentColor;
   final Color accentLightColor;
 
   const DebugPanelPalette({
+    required this.appBarBackground,
     required this.accentColor,
     required this.accentLightColor,
   });
@@ -17,11 +19,13 @@ class DebugPanelPalette {
 
 abstract class DebugPanelThemeData {
   static const darkPalette = DebugPanelPalette(
+    appBarBackground: Color(0xFF000000),
     accentColor: Color(0xFF538E95),
     accentLightColor: Color(0xFFA1C7CC),
   );
 
   static const lightPalette = DebugPanelPalette(
+    appBarBackground: Color(0xFFFFFFFF),
     accentColor: Color(0xFF538E95),
     accentLightColor: Color(0xFFA1C7CC),
   );
@@ -47,7 +51,7 @@ abstract class DebugPanelThemeData {
       // AppBar theme
       appBarTheme: AppBarTheme(
         // backgroundColor: const Color(0xFF17151C),
-        backgroundColor: const Color(0xFF000000),
+        backgroundColor: darkPalette.appBarBackground,
         titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: darkScheme.primary),
         centerTitle: false,
         actionsIconTheme: IconThemeData(
@@ -100,7 +104,7 @@ abstract class DebugPanelThemeData {
 
       // AppBar theme
       appBarTheme: AppBarTheme(
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: lightPalette.appBarBackground,
         titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: lightScheme.primary),
         centerTitle: false,
         actionsIconTheme: IconThemeData(
