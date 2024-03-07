@@ -1,6 +1,7 @@
 import 'package:debug_panel/debug_panel.dart';
 import 'package:flutter/widgets.dart';
 
+/*
 class DebugPanelCustomize extends StatefulWidget {
   final dynamic pages;
   final dynamic items; // TODO: ???
@@ -47,3 +48,4 @@ class _DebugPanelCustomizeState extends State<DebugPanelCustomize> {
     return const Placeholder();
   }
 }
+*/

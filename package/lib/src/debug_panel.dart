@@ -1,21 +1,24 @@
 import 'package:debug_panel/src/controller.dart';
 import 'package:debug_panel/src/floating_button/floating_button_surface.dart';
-import 'package:debug_panel/src/overlay.dart';
 import 'package:debug_panel/src/screen/screen.dart';
 import 'package:debug_panel/src/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 class DebugPanel extends StatefulWidget {
-  // final GlobalKey<NavigatorState> navigatorKey;
+  final GlobalKey<NavigatorState> navigatorKey;
   final DebugPanelController? controller;
   final DebugPanelBaseSettings settings;
   final Widget? child;
 
+  // TODO: Add Detector builder (default (context, child) => DebugPanelFloatingButtonDetector(child: child))
+  //       DebugPanelShortcutDetector(shortcut: (Alt-F12)) - show debug panel with keyboard shortcut
+  //       DebugPanelShakeDetector - show debug panel on shake
+  //       DebugPanelTwoFingersDetector - show panel with two fingers hold
+
   const DebugPanel({
     super.key,
-    // required this.navigatorKey,
+    required this.navigatorKey,
     this.controller,
     this.settings = const DebugPanelSettings(),
     required this.child,
@@ -23,122 +26,100 @@ class DebugPanel extends StatefulWidget {
 
   @override
   State<DebugPanel> createState() => DebugPanelState();
-
-  static DebugPanelController? maybeOf(BuildContext context) {
-    final inherited = context.dependOnInheritedWidgetOfExactType<_InheritedDebugPanel>();
-    return inherited?.controller;
-  }
 }
 
 @internal
 class DebugPanelState extends State<DebugPanel> {
-  /*
-  DebugPanelController get controller =>
-      _controller ??= ((widget.controller ?? DebugPanelController.of(context))..attachPanel(this, widget.settings));
-  DebugPanelController? _controller;
-
-  // TODO: Get rid of attaching the panel to the controller.
-
-  @override
-  void dispose() {
-    _controller?.detachPanel();
-
-    super.dispose();
-  }
-  */
-
-  // bool _opened = false;
-
   DebugPanelController get controller =>
       _controller ??= widget.controller ?? DebugPanelController(buttonVisible: widget.settings.buttonVisible);
   DebugPanelController? _controller;
 
-  /*
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  bool _screenVisible = false;
 
-    if (_controller == null) {
-      controller.addListener(_handleControllerChanges);
-    }
+  @override
+  void initState() {
+    super.initState();
+
+    controller.addListener(_toggleScreen);
   }
-  */
 
   @override
   void didUpdateWidget(covariant DebugPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.controller != widget.controller) {
-      /*
-      _controller?.removeListener(_handleControllerChanges);
+      controller.removeListener(_toggleScreen);
       _controller = null;
-      controller.addListener(_handleControllerChanges);
-      */
-      _controller = null;
+      controller.addListener(_toggleScreen);
     }
-
-    /*
-    if (oldWidget.settings != widget.settings) {
-      controller.applySettings(widget.settings);
-    }
-    */
   }
 
-  /*
-  void _handleControllerChanges() {
-    if (_opened != controller.opened) {
-      _opened = controller.opened;
+  @override
+  void dispose() {
+    controller.removeListener(_toggleScreen);
 
-      if (_opened) {
-        // TODO: Open modal route
-        widget.navigatorKey.currentState?.push(
-          MaterialPageRoute(
-            builder: (context) => DebugPanelScreen(
-              controller: controller,
-              pages: widget.settings.pages,
-            ),
-          ),
-        );
-      } else {
-        // TODO: Close modal route
-      }
+    if (widget.controller == null) {
+      _controller?.dispose();
+    }
+
+    super.dispose();
+  }
+
+  void _toggleScreen() async {
+    if (controller.opened && !_screenVisible) {
+      _openScreen();
+    } else if (!controller.opened && _screenVisible) {
+      _closeScreen();
     }
   }
-  */
+
+  Future<void> _openScreen() async {
+    _screenVisible = true;
+    try {
+      await widget.navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          settings: const RouteSettings(name: '/debug_panel_screen'),
+          builder: (context) => DebugPanelScreen(controller: controller, pages: widget.settings.pages),
+        ),
+      );
+    } finally {
+      _screenVisible = false;
+    }
+
+    controller.close();
+  }
+
+  void _closeScreen() {
+    widget.navigatorKey.currentState?.popUntil(ModalRoute.withName('/debug_panel_screen'));
+    widget.navigatorKey.currentState?.pop();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // return _InheritedDebugPanel(
-    //   controller: controller,
-    //   child: DebugPanelOverlay(
-    //     controller: controller,
-    //     // builder: widget.settings.buildOverlay,
-    //     builder: (context) => DebugPanelScreen(pages: widget.settings.pages),
-    //     // TODO: Wrap with floating button
-    //     child: widget.child ?? const SizedBox.shrink(),
-    //   ),
-    // );
-
+    /*
     final overlay = DebugPanelOverlay(
       controller: controller,
-      // builder: widget.settings.buildOverlay,
       builder: (context) => DebugPanelScreen(
         controller: controller,
         pages: widget.settings.pages,
       ),
-      // TODO: Wrap with floating button
       child: DebugPanelFloatingButtonSurface(
+        onPressed: () {
+          controller.open();
+        },
         controller: controller,
         child: widget.child ?? const SizedBox.shrink(),
       ),
     );
+    */
 
-    /*
     final overlay = DebugPanelFloatingButtonSurface(
+      onPressed: () {
+        controller.open();
+      },
       controller: controller,
       child: widget.child ?? const SizedBox.shrink(),
     );
-    */
 
     if (widget.controller == null) {
       return DebugPanelDefaultController(
@@ -149,16 +130,4 @@ class DebugPanelState extends State<DebugPanel> {
       return overlay;
     }
   }
-}
-
-class _InheritedDebugPanel extends InheritedWidget {
-  final DebugPanelController controller;
-
-  const _InheritedDebugPanel({
-    required super.child,
-    required this.controller,
-  });
-
-  @override
-  bool updateShouldNotify(covariant _InheritedDebugPanel oldWidget) => oldWidget.controller != controller;
 }

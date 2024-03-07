@@ -164,7 +164,7 @@ class AppDebugPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DebugPanel(
-      // navigatorKey: MainApp.navigatorKey,
+      navigatorKey: MainApp.navigatorKey,
       settings: DebugPanelSettings(
         // buttonVisible: kDebugMode,
         buttonVisible: true,
@@ -192,6 +192,22 @@ class AppDebugPanel extends StatelessWidget {
 
                       //
                       const ThemeModeSwitch(text: 'Main App Light Mode?'),
+
+                      //
+                      const SizedBox(height: 24),
+
+                      //
+                      ElevatedButton(
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'DebugPanel Demo App',
+                            applicationVersion: '0.1',
+                            applicationLegalese: '(C) Andy Chentsov',
+                          );
+                        },
+                        child: const Text('Show Dialog'),
+                      ),
                     ],
                   );
                 },
@@ -359,6 +375,22 @@ class DemoScreen extends StatelessWidget {
                   DebugPanelController.maybeOf(context)?.open();
                 },
                 child: const Text('Open DebugPanel'),
+              ),
+
+              //
+              const SizedBox(height: 24),
+
+              //
+              ElevatedButton(
+                onPressed: () {
+                  showAboutDialog(
+                    context: context,
+                    applicationName: 'DebugPanel Demo App',
+                    applicationVersion: '0.1',
+                    applicationLegalese: '(C) Andy Chentsov',
+                  );
+                },
+                child: const Text('Show Dialog'),
               ),
             ],
           ),

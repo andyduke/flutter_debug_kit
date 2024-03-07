@@ -64,7 +64,8 @@ abstract class DebugPanelThemeData {
       //   tabAlignment: TabAlignment.start,
       // ),
 
-      // Text styles
+      // Text theme
+      // TODO: Enlarge font sizes
       textTheme: const TextTheme(
         bodySmall: TextStyle(color: Color(0xFFB0BAC2)),
       ),
@@ -111,6 +112,12 @@ abstract class DebugPanelThemeData {
           color: lightScheme.primary,
         ),
       ),
+
+      // Text theme
+      // TODO: Enlarge font sizes
+      textTheme: const TextTheme(
+          // bodySmall: TextStyle(color: Color(0xFFB0BAC2)),
+          ),
 
       // Scrollbar theme
       scrollbarTheme: ScrollbarThemeData(

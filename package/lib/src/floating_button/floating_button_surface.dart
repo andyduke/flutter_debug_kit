@@ -3,68 +3,27 @@ import 'package:debug_panel/src/floating_button/floating_button.dart';
 import 'package:debug_panel/src/widgets/movable.dart';
 import 'package:flutter/material.dart';
 
-class DebugPanelFloatingButtonSurface extends StatefulWidget {
+class DebugPanelFloatingButtonSurface extends StatelessWidget {
   final DebugPanelController controller;
   final Widget child;
+  final VoidCallback onPressed;
 
   const DebugPanelFloatingButtonSurface({
     super.key,
     required this.child,
     required this.controller,
+    required this.onPressed,
   });
 
   @override
-  State<DebugPanelFloatingButtonSurface> createState() => _DebugPanelFloatingButtonSurfaceState();
-}
-
-class _DebugPanelFloatingButtonSurfaceState extends State<DebugPanelFloatingButtonSurface> {
-  final _overlayKey = GlobalKey(debugLabel: 'DebugPanel.FloatingButon.Overlay');
-
-  bool _ready = false;
-  double _top = 0;
-  double _left = 0;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (!_ready) {
-      _top = (MediaQuery.of(context).size.height * 0.75) - (DebugPanelFloatingButton.buttonSize * 1.2);
-      _left = MediaQuery.of(context).size.width - (DebugPanelFloatingButton.buttonSize * 1.2);
-      _ready = true;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // return Stack(
-    //   children: [
-    //     widget.child,
+    final screenInsets = controller.buttonVisible ? MediaQuery.viewPaddingOf(context) : EdgeInsets.zero;
+    final screenSize = screenInsets.deflateSize(controller.buttonVisible ? MediaQuery.sizeOf(context) : Size.zero);
 
-    //     // Floating button
-    //     Positioned(
-    //       top: _top,
-    //       left: _left,
-    //       child: Offstage(
-    //         offstage: !widget.controller.buttonVisible,
-
-    //         // TODO: Draggable
-    //         child: DebugPanelFloatingButton(
-    //           onPressed: () {
-    //             widget.controller.open();
-    //           },
-    //         ),
-    //       ),
-    //     ),
-    //   ],
-    // );
-
-    final screenInsets = widget.controller.buttonVisible ? MediaQuery.viewPaddingOf(context) : EdgeInsets.zero;
-    final screenSize =
-        screenInsets.deflateSize(widget.controller.buttonVisible ? MediaQuery.sizeOf(context) : Size.zero);
+    // TODO: Fix Huawei screenSize issue
 
     return Movable(
-      enabled: widget.controller.buttonVisible,
+      enabled: controller.buttonVisible,
       position: Offset(
         (screenSize.width - DebugPanelFloatingButton.buttonSize - 16).clamp(20, double.maxFinite),
         (screenSize.height * 0.8) - (DebugPanelFloatingButton.buttonSize / 2).clamp(20, double.maxFinite),
@@ -79,14 +38,18 @@ class _DebugPanelFloatingButtonSurfaceState extends State<DebugPanelFloatingButt
       //   widget.controller.open();
       // },
       movable: Offstage(
-        offstage: !widget.controller.buttonVisible,
-        child: DebugPanelFloatingButton(
-          onPressed: () {
-            widget.controller.open();
-          },
+        offstage: !controller.buttonVisible,
+        child: ListenableBuilder(
+          listenable: controller,
+          builder: (context, child) => Visibility(
+            visible: !controller.opened,
+            child: DebugPanelFloatingButton(
+              onPressed: onPressed,
+            ),
+          ),
         ),
       ),
-      child: widget.child,
+      child: child,
     );
   }
 }
