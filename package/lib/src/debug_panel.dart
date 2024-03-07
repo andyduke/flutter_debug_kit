@@ -1,6 +1,7 @@
 import 'package:debug_panel/src/controller.dart';
 import 'package:debug_panel/src/floating_button/floating_button_surface.dart';
 import 'package:debug_panel/src/screen/screen.dart';
+import 'package:debug_panel/src/screen_route.dart';
 import 'package:debug_panel/src/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -30,6 +31,8 @@ class DebugPanel extends StatefulWidget {
 
 @internal
 class DebugPanelState extends State<DebugPanel> {
+  static const _screenRouteName = '/debug_panel_screen';
+
   DebugPanelController get controller =>
       _controller ??= widget.controller ?? DebugPanelController(buttonVisible: widget.settings.buttonVisible);
   DebugPanelController? _controller;
@@ -77,8 +80,14 @@ class DebugPanelState extends State<DebugPanel> {
     _screenVisible = true;
     try {
       await widget.navigatorKey.currentState?.push(
-        MaterialPageRoute(
-          settings: const RouteSettings(name: '/debug_panel_screen'),
+        // MaterialPageRoute(
+        //   fullscreenDialog: true,
+        //   barrierDismissible: true,
+        //   settings: const RouteSettings(name: _screenRouteName),
+        //   builder: (context) => DebugPanelScreen(controller: controller, pages: widget.settings.pages),
+        // ),
+        DebugPanelScreenRoute(
+          settings: const RouteSettings(name: _screenRouteName),
           builder: (context) => DebugPanelScreen(controller: controller, pages: widget.settings.pages),
         ),
       );
@@ -90,7 +99,7 @@ class DebugPanelState extends State<DebugPanel> {
   }
 
   void _closeScreen() {
-    widget.navigatorKey.currentState?.popUntil(ModalRoute.withName('/debug_panel_screen'));
+    widget.navigatorKey.currentState?.popUntil(ModalRoute.withName(_screenRouteName));
     widget.navigatorKey.currentState?.pop();
   }
 

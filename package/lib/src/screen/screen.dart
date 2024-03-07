@@ -38,6 +38,9 @@ class DebugPanelScreen extends StatelessWidget {
       ),
     );
     */
+
+    // TODO: Fix navigation bar color issue
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _systemOverlayStyleForBrightness(Theme.of(context).brightness),
       child: DebugPanelTheme(
