@@ -3,6 +3,7 @@ import 'package:debug_panel/src/triggers/floating_button/floating_button_trigger
 import 'package:debug_panel/src/screen/screen.dart';
 import 'package:debug_panel/src/screen_route.dart';
 import 'package:debug_panel/src/settings.dart';
+import 'package:debug_panel/src/triggers/glyph/glyph_trigger.dart';
 import 'package:debug_panel/src/triggers/shortcut_trigger.dart';
 import 'package:debug_panel/src/triggers/trigger.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +30,14 @@ class DebugPanel extends StatefulWidget {
   });
 
   static Widget _defaultTriggers(BuildContext context, DebugPanelController controller, Widget child) {
-    return DebugPanelShortcutTrigger(
+    return DebugPanelGlyphTrigger(
       controller: controller,
-      child: DebugPanelFloatingButtonTrigger(
+      child: DebugPanelShortcutTrigger(
         controller: controller,
-        child: child,
+        child: DebugPanelFloatingButtonTrigger(
+          controller: controller,
+          child: child,
+        ),
       ),
     );
   }
