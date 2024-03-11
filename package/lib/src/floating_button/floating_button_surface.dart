@@ -19,15 +19,14 @@ class DebugPanelFloatingButtonSurface extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenInsets = controller.buttonVisible ? MediaQuery.viewPaddingOf(context) : EdgeInsets.zero;
     final screenSize = screenInsets.deflateSize(controller.buttonVisible ? MediaQuery.sizeOf(context) : Size.zero);
-
-    // TODO: Fix Huawei screenSize issue
+    final position = Offset(
+      (screenSize.width - DebugPanelFloatingButton.buttonSize - 16).clamp(20, double.maxFinite),
+      (screenSize.height * 0.8) - (DebugPanelFloatingButton.buttonSize / 2).clamp(20, double.maxFinite),
+    );
 
     return Movable(
       enabled: controller.buttonVisible,
-      position: Offset(
-        (screenSize.width - DebugPanelFloatingButton.buttonSize - 16).clamp(20, double.maxFinite),
-        (screenSize.height * 0.8) - (DebugPanelFloatingButton.buttonSize / 2).clamp(20, double.maxFinite),
-      ),
+      position: position,
       size: const Size(DebugPanelFloatingButton.buttonSize, DebugPanelFloatingButton.buttonSize), // TODO: DEBUG
       bounds: Rect.fromLTWH(screenInsets.left, screenInsets.top, screenSize.width, screenSize.height),
       onMoveEnd: (position) {
@@ -50,6 +49,32 @@ class DebugPanelFloatingButtonSurface extends StatelessWidget {
         ),
       ),
       child: child,
+      /*
+      // TODO: DEBUG
+      child: Stack(
+        children: [
+          child,
+          Positioned(
+            top: 100,
+            left: 100,
+            child: Material(
+              type: MaterialType.canvas,
+              child: Container(
+                width: 200,
+                color: Colors.amber,
+                padding: const EdgeInsets.all(12),
+                child: Text('''
+Screen insets: $screenInsets\n
+Screen size: $screenSize\n
+Position: $position\n
+Viewport bounds: ${Rect.fromLTWH(screenInsets.left, screenInsets.top, screenSize.width, screenSize.height)}
+'''),
+              ),
+            ),
+          ),
+        ],
+      ),
+      */
     );
   }
 }

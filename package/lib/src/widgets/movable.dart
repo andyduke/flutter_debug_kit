@@ -50,6 +50,8 @@ class _MovableState extends State<Movable> {
   double startX = 0;
   double startY = 0;
 
+  bool moved = false;
+
   @override
   void initState() {
     super.initState();
@@ -61,8 +63,16 @@ class _MovableState extends State<Movable> {
   void didUpdateWidget(covariant Movable oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    double newX = x;
+    double newY = y;
+
+    if (!moved && (widget.position != oldWidget.position)) {
+      newX = widget.position.dx;
+      newY = widget.position.dy;
+    }
+
     if ((widget.bounds != oldWidget.bounds) || (widget.size != oldWidget.size)) {
-      _updatePosition(x, y);
+      _updatePosition(newX, newY);
     }
   }
 
@@ -111,6 +121,8 @@ class _MovableState extends State<Movable> {
   void _moveUpdate(double x, double y) {
     var yDelta = y - startY;
     var xDelta = x - startX;
+
+    moved = true;
 
     _updatePosition(xDelta, yDelta);
     setState(() {});
