@@ -18,31 +18,8 @@ class DebugPanelScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /*
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              controller.close();
-            },
-            icon: const Icon(Icons.close),
-          ),
-        ],
-      ),
-      // TODO: DEBUG
-      body: Column(
-        children: [
-          for (var page in pages) page.build(context),
-        ],
-      ),
-    );
-    */
-
-    // TODO: Fix navigation bar color issue
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: _systemOverlayStyleForBrightness(Theme.of(context).brightness),
+      value: systemOverlayStyleForBrightness(Theme.of(context).brightness),
       child: DebugPanelTheme(
         child: DebugPanelScaffold(
           controller: controller,
@@ -52,9 +29,9 @@ class DebugPanelScreen extends StatelessWidget {
     );
   }
 
-  SystemUiOverlayStyle _systemOverlayStyleForBrightness(Brightness brightness) {
+  static SystemUiOverlayStyle systemOverlayStyleForBrightness(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    final SystemUiOverlayStyle style = !isDark
+    final SystemUiOverlayStyle style = isDark
         ? SystemUiOverlayStyle(
             statusBarColor: DebugPanelThemeData.lightPalette.appBarBackground,
             statusBarIconBrightness: Brightness.dark,

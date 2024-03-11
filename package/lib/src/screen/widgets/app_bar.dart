@@ -1,7 +1,9 @@
 import 'package:debug_panel/src/pages/base_page.dart';
+import 'package:debug_panel/src/screen/screen.dart';
 import 'package:debug_panel/src/screen/widgets/app_bar_tabs.dart';
 import 'package:debug_panel/src/widgets/custom_tabs/custom_tab_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DebugPanelAppBar extends StatelessWidget {
   // final TabController tabController;
@@ -20,8 +22,6 @@ class DebugPanelAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
-
     return SliverAppBar(
       // Title
       title: const Padding(

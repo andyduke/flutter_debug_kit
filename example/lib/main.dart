@@ -19,39 +19,23 @@ class MainApp extends StatelessWidget {
     return ValueListenableBuilder(
         valueListenable: themeMode,
         builder: (context, mode, child) {
-          return AnnotatedRegion(
-            value: (mode == ThemeMode.light)
-                ? const SystemUiOverlayStyle(
-                    statusBarColor: Color(0xFFFFFFFF),
-                    statusBarIconBrightness: Brightness.dark,
-                    statusBarBrightness: Brightness.light,
-                    systemNavigationBarColor: Color(0xFFFFFFFF),
-                    systemNavigationBarIconBrightness: Brightness.dark,
-                  )
-                : const SystemUiOverlayStyle(
-                    statusBarColor: Color(0xFF000000),
-                    statusBarIconBrightness: Brightness.light,
-                    statusBarBrightness: Brightness.dark,
-                    systemNavigationBarColor: Color(0xFF000000),
-                    systemNavigationBarIconBrightness: Brightness.light,
+          final app = MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
+            home: const DemoScreen(),
+            themeMode: mode,
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            builder: (context, child) {
+              return AppDebugPanelScope(
+                child: Providers(
+                  child: AppDebugPanel(
+                    child: child,
                   ),
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              navigatorKey: navigatorKey,
-              home: const DemoScreen(),
-              themeMode: mode,
-              theme: ThemeData.light(),
-              darkTheme: ThemeData.dark(),
-              builder: (context, child) {
-                return AppDebugPanelScope(
-                  child: Providers(
-                    child: AppDebugPanel(
-                      child: child,
-                    ),
-                  ),
-                );
+                ),
+              );
 
-                /*
+              /*
               return DebugPanel(
                 settings: DebugPanelSettings(
                   buttonVisible: kDebugMode,
@@ -76,7 +60,7 @@ class MainApp extends StatelessWidget {
               );
               */
 
-                /*
+              /*
               return Providers(
                 child: DebugPanelPageBuilder(
                   id: 'app-page',
@@ -89,8 +73,26 @@ class MainApp extends StatelessWidget {
                 ),
               );
               */
-              },
-            ),
+            },
+          );
+
+          return AnnotatedRegion(
+            value: (mode == ThemeMode.light)
+                ? const SystemUiOverlayStyle(
+                    statusBarColor: Color(0xFFFFFFFF),
+                    statusBarIconBrightness: Brightness.dark,
+                    statusBarBrightness: Brightness.light,
+                    systemNavigationBarColor: Color(0xFFFFFFFF),
+                    systemNavigationBarIconBrightness: Brightness.dark,
+                  )
+                : const SystemUiOverlayStyle(
+                    statusBarColor: Color(0xFF000000),
+                    statusBarIconBrightness: Brightness.light,
+                    statusBarBrightness: Brightness.dark,
+                    systemNavigationBarColor: Color(0xFF000000),
+                    systemNavigationBarIconBrightness: Brightness.light,
+                  ),
+            child: app,
           );
         });
 
@@ -345,56 +347,60 @@ class DemoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Demo'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Demo'),
+      ),
+      body: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Consumer<AuthState>(
+              builder: (context, value, child) {
+                return Text('Is logged: ${value.isLogged}');
+              },
+            ),
+
+            //
+            const SizedBox(height: 24),
+
+            const ThemeModeSwitch(),
+
+            //
+            const SizedBox(height: 24),
+
+            //
+            ElevatedButton(
+              onPressed: () {
+                DebugPanelController.maybeOf(context)?.open();
+              },
+              child: const Text('Open DebugPanel'),
+            ),
+
+            //
+            const SizedBox(height: 24),
+
+            //
+            ElevatedButton(
+              onPressed: () {
+                showAboutDialog(
+                  context: context,
+                  applicationName: 'DebugPanel Demo App',
+                  applicationVersion: '0.1',
+                  applicationLegalese: '(C) Andy Chentsov',
+                );
+              },
+              child: const Text('Show Dialog'),
+            ),
+          ],
         ),
-        body: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Consumer<AuthState>(
-                builder: (context, value, child) {
-                  return Text('Is logged: ${value.isLogged}');
-                },
-              ),
-
-              //
-              const SizedBox(height: 24),
-
-              const ThemeModeSwitch(),
-
-              //
-              const SizedBox(height: 24),
-
-              //
-              ElevatedButton(
-                onPressed: () {
-                  DebugPanelController.maybeOf(context)?.open();
-                },
-                child: const Text('Open DebugPanel'),
-              ),
-
-              //
-              const SizedBox(height: 24),
-
-              //
-              ElevatedButton(
-                onPressed: () {
-                  showAboutDialog(
-                    context: context,
-                    applicationName: 'DebugPanel Demo App',
-                    applicationVersion: '0.1',
-                    applicationLegalese: '(C) Andy Chentsov',
-                  );
-                },
-                child: const Text('Show Dialog'),
-              ),
-            ],
-          ),
-        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.abc), label: 'ABC'),
+        ],
       ),
     );
     /*
