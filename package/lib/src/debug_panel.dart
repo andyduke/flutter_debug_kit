@@ -8,17 +8,16 @@ import 'package:debug_panel/src/triggers/trigger.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+// TODO: Add triggers:
+//   - DebugPanelShakeTrigger - show debug panel on shake
+//   - DebugPanelTwoFingersTrigger - show panel with two fingers hold
+
 class DebugPanel extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   final DebugPanelController? controller;
   final DebugPanelBaseSettings settings;
   final Widget? child;
   final DebugPanelTrigger trigger;
-
-  // TODO: Add triggers builder (default (context, child) => DebugPanelFloatingButtonTrigger(child: child))
-  //       DebugPanelShortcutTrigger(shortcut: (Alt-F12)) - show debug panel with keyboard shortcut
-  //       DebugPanelShakeTrigger - show debug panel on shake
-  //       DebugPanelTwoFingersTrigger - show panel with two fingers hold
 
   const DebugPanel({
     super.key,

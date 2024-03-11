@@ -2,6 +2,7 @@ import 'package:debug_panel/src/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Opens/closes Debug Panel using keyboard keys, default Alt-F12.
 class DebugPanelShortcutTrigger extends StatelessWidget {
   static final defaultActivator = LogicalKeySet(
     LogicalKeyboardKey.f12,
