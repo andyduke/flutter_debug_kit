@@ -82,7 +82,7 @@ class AppBarTab extends StatelessWidget {
               text,
               style: tabTheme.textStyle.apply(color: foreColor),
             ),
-            if (icon != null) const SizedBox(width: 4),
+            const SizedBox(width: 4),
           ],
         ),
       ),
