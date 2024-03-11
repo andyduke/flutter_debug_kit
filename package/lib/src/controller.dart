@@ -33,52 +33,6 @@ class DebugPanelController with ChangeNotifier {
     }
   }
 
-  // ---
-
-  /*
-  @internal
-  DebugPanel? get attachedPanel => _attachedPanel;
-  DebugPanel? _attachedPanel;
-
-  @internal
-  set attachedPanel(DebugPanel? newValue) {
-    if (newValue != null && _attachedPanel != null && newValue != _attachedPanel) {
-      throw Exception('This DebugPanelController is already used in DebugPanel.');
-    } else {
-      _attachedPanel = newValue.attach(this);
-    }
-  }
-  */
-
-  /*
-  // TODO: Remove attachPanel/detachPanel!
-
-  DebugPanelState? _attachedPanel;
-
-  @internal
-  void attachPanel(DebugPanelState panel, DebugPanelBaseSettings settings) {
-    if (_attachedPanel != null) {
-      throw Exception('This DebugPanelController is already used in DebugPanel.');
-    } else {
-      _attachedPanel = panel;
-      applySettings(settings);
-    }
-  }
-
-  @internal
-  void detachPanel() {
-    _attachedPanel = null;
-  }
-
-  @internal
-  void applySettings(DebugPanelBaseSettings settings) {
-    _buttonVisible = settings.buttonVisible;
-  }
-  */
-
-  // @internal
-  // void addPage() {}
-
   @override
   bool operator ==(covariant DebugPanelController other) {
     return (opened == other.opened) && (buttonVisible == other.buttonVisible);
@@ -88,14 +42,6 @@ class DebugPanelController with ChangeNotifier {
   int get hashCode => Object.hash(opened, buttonVisible);
 
   // ---
-
-  // static DebugPanelController? _primaryController;
-
-  // static DebugPanelController of(BuildContext context) {
-  //   final DebugPanelDefaultController? result =
-  //       context.dependOnInheritedWidgetOfExactType<DebugPanelDefaultController>();
-  //   return result?.controller ?? (_primaryController ??= DebugPanelController());
-  // }
 
   static DebugPanelController? maybeOf(BuildContext context) {
     final DebugPanelDefaultController? result =

@@ -62,8 +62,6 @@ class DebugPanelPage extends DebugPanelBasePage {
 
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
-
     return SingleChildScrollView(
       child: Container(
         padding: DebugPanelBasePage.defaultPadding,
@@ -82,7 +80,6 @@ class _DebugPanelPageSectionView extends StatefulWidget {
   final DebugPanelPageBaseSection section;
 
   const _DebugPanelPageSectionView({
-    super.key,
     required this.section,
   });
 
@@ -98,7 +95,6 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // TODO: Wrap with Expanded if collapsible
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -123,9 +119,6 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
                 children: [
                   Expanded(
                     child: Text(widget.section.title, style: theme.textTheme.titleMedium),
-                    // child: Text(
-                    //     'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dapibus, ante ultricies adipiscing pulvinar.',
-                    //     style: theme.textTheme.titleMedium),
                   ),
 
                   //

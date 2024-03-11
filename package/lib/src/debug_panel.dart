@@ -105,23 +105,6 @@ class DebugPanelState extends State<DebugPanel> {
 
   @override
   Widget build(BuildContext context) {
-    /*
-    final overlay = DebugPanelOverlay(
-      controller: controller,
-      builder: (context) => DebugPanelScreen(
-        controller: controller,
-        pages: widget.settings.pages,
-      ),
-      child: DebugPanelFloatingButtonSurface(
-        onPressed: () {
-          controller.open();
-        },
-        controller: controller,
-        child: widget.child ?? const SizedBox.shrink(),
-      ),
-    );
-    */
-
     final overlay = DebugPanelFloatingButtonSurface(
       onPressed: () {
         controller.open();

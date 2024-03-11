@@ -18,9 +18,6 @@ class AppBarTabs extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
-    // final tabTheme = theme.extension<DebugPanelAppBarTabsTheme>()!;
-
     return CustomTabBar(
       controller: controller,
       isScrollable: true,
@@ -44,57 +41,6 @@ class AppBarTabs extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(60.0);
 }
 
-/*
-class AppBarTabs extends CustomTabBar {
-  AppBarTabs({
-    super.key,
-    required super.controller,
-    required Set<DebugPanelPage> pages,
-  }) : super(
-          isScrollable: true,
-          tabs: _buildTabs(pages),
-        );
-
-  static List<Widget> _buildTabs(Set<DebugPanelPage> pages) {
-    return [
-      for (var page in pages)
-        AppBarTab(
-          icon: page.icon,
-          text: page.title,
-        ),
-    ];
-  }
-}
-*/
-
-/*
-class AppBarTabBar extends StatelessWidget {
-  const AppBarTabBar({
-    super.key,
-    required this.tabController,
-    required this.pages,
-  });
-
-  final CustomTabController tabController;
-  final Set<DebugPanelPage> pages;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomTabBar(
-      controller: tabController,
-      isScrollable: true,
-      tabs: [
-        for (var page in pages)
-          AppBarTab(
-            icon: page.icon,
-            text: page.title,
-          ),
-      ],
-    );
-  }
-}
-*/
-
 class AppBarTab extends StatelessWidget {
   final String text;
   final IconData? icon;
@@ -113,12 +59,6 @@ class AppBarTab extends StatelessWidget {
     final theme = Theme.of(context);
     final tabTheme = theme.extension<DebugPanelAppBarTabsTheme>()!;
 
-    // final foreColor = switch (states) {
-    //   Set<CustomTabState>() when states.contains(CustomTabState.selected) => tabTheme.selectedTabForeColor,
-    //   Set<CustomTabState>() when states.contains(CustomTabState.hovered) => tabTheme.hoveredTabForeColor,
-    //   _ => tabTheme.tabForeColor,
-    // };
-
     final foreColor = tabTheme.colors.resolve(states).foreground;
 
     return Container(
@@ -129,11 +69,6 @@ class AppBarTab extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: ShapeDecoration(
-          // color: switch (states) {
-          //   Set<CustomTabState>() when states.contains(CustomTabState.selected) => tabTheme.selectedTabBackColor,
-          //   Set<CustomTabState>() when states.contains(CustomTabState.hovered) => tabTheme.hoveredTabBackColor,
-          //   _ => tabTheme.tabBackColor,
-          // },
           color: tabTheme.colors.resolve(states).background,
           shape: const StadiumBorder(),
         ),

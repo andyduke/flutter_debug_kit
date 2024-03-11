@@ -24,22 +24,6 @@ class DebugPanelAppBar extends StatelessWidget {
 
     return SliverAppBar(
       // Title
-      // title: Row(
-      //   mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //     Container(
-      //       decoration: BoxDecoration(
-      //         color: theme.colorScheme.background,
-      //         borderRadius: BorderRadius.circular(8),
-      //       ),
-      //       padding: const EdgeInsets.all(8),
-      //       child: const Text('D'),
-      //     ),
-      //     const SizedBox(width: 8),
-      //     const Text('Debug Panel'),
-      //   ],
-      // ),
-      // centerTitle: false,
       title: const Padding(
         padding: EdgeInsets.only(top: 9),
         child: Text('Debug Panel'),
@@ -60,9 +44,7 @@ class DebugPanelAppBar extends StatelessWidget {
       // Settings
       floating: true,
       pinned: true,
-      //stretch: true,
       snap: false,
-      // backgroundColor: Colors.teal,
       scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
 
@@ -78,110 +60,6 @@ class DebugPanelAppBar extends StatelessWidget {
           );
         },
       ),
-      /*
-      bottom: TabBar(
-        controller: tabController,
-        isScrollable: true,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        // labelPadding: EdgeInsets.zero,
-        tabs: [
-          for (var page in pages)
-            _Tab(
-              icon: page.icon,
-              text: page.title,
-            ),
-        ],
-        labelColor: theme.colorScheme.onPrimary,
-        // unselectedLabelColor: Colors.black,
-        // indicatorSize: TabBarIndicatorSize.label,
-        indicatorSize: TabBarIndicatorSize.tab,
-
-        // TODO: Custom decoration with vertical inner spacing
-        indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            25,
-          ),
-          color: theme.colorScheme.primary,
-        ),
-        onTap: (value) {
-          if (!tabController.indexIsChanging && (tabController.index == value)) {
-            scrollController.animateTo(
-              0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.linear,
-            );
-          }
-        },
-      ),
-      */
-      /*
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Container(
-          width: double.infinity,
-          constraints: const BoxConstraints(minHeight: kToolbarHeight),
-          // decoration: const BoxDecoration(
-          //   color: Colors.teal,
-          // ),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.linear,
-              );
-            },
-            child: const Text('Pages tabs'),
-          ),
-        ),
-      ),
-      */
     );
   }
 }
-
-/*
-class _Tab extends StatelessWidget implements PreferredSizeWidget {
-  static const double _kTabHeight = 46.0;
-  // static const double _kTabHeight = 34.0;
-
-  final String text;
-  final IconData? icon;
-
-  const _Tab({
-    super.key,
-    required this.text,
-    this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final label = Row(
-      children: [
-        if (icon != null)
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Icon(icon),
-          ),
-
-        //
-        Text(text),
-      ],
-    );
-
-    return SizedBox(
-      height: _kTabHeight,
-      child: Center(
-        widthFactor: 1.0,
-        child: label,
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize {
-    return const Size.fromHeight(_kTabHeight);
-  }
-}
-*/

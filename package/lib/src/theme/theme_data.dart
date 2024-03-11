@@ -65,7 +65,7 @@ abstract class DebugPanelThemeData {
       // ),
 
       // Text theme
-      // TODO: Enlarge font sizes
+      // TODO: Enlarge font sizes (or define textScaler?)
       textTheme: const TextTheme(
         bodySmall: TextStyle(color: Color(0xFFB0BAC2)),
       ),

@@ -19,12 +19,8 @@ class DebugPanelScaffold extends StatefulWidget {
   State<DebugPanelScaffold> createState() => _DebugPanelScaffoldState();
 }
 
-class _DebugPanelScaffoldState extends State<DebugPanelScaffold> /* with SingleTickerProviderStateMixin */ {
+class _DebugPanelScaffoldState extends State<DebugPanelScaffold> {
   final scrollController = ScrollController();
-  // late final tabController = TabController(
-  //   vsync: this,
-  //   length: widget.pages.length,
-  // );
 
   late final tabController = CustomTabController(
     length: widget.pages.length,
@@ -62,18 +58,6 @@ class _DebugPanelScaffoldState extends State<DebugPanelScaffold> /* with SingleT
               ),
           ],
         ),
-        /* TODO: DEBUG
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            for (var page in widget.pages)
-              Container(
-                alignment: Alignment.center,
-                child: Text('$page'),
-              ),
-          ],
-        ),
-        */
       ),
     );
   }
