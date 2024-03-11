@@ -1,18 +1,18 @@
 import 'package:debug_panel/src/controller.dart';
-import 'package:debug_panel/src/floating_button/floating_button.dart';
+import 'package:debug_panel/src/triggers/floating_button/floating_button.dart';
 import 'package:debug_panel/src/widgets/movable.dart';
 import 'package:flutter/material.dart';
 
-class DebugPanelFloatingButtonSurface extends StatelessWidget {
+class DebugPanelFloatingButtonTrigger extends StatelessWidget {
   final DebugPanelController controller;
   final Widget child;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
-  const DebugPanelFloatingButtonSurface({
+  const DebugPanelFloatingButtonTrigger({
     super.key,
     required this.child,
     required this.controller,
-    required this.onPressed,
+    this.onPressed,
   });
 
   @override
@@ -43,7 +43,7 @@ class DebugPanelFloatingButtonSurface extends StatelessWidget {
           builder: (context, child) => Visibility(
             visible: !controller.opened,
             child: DebugPanelFloatingButton(
-              onPressed: onPressed,
+              onPressed: onPressed ?? () => controller.open(),
             ),
           ),
         ),

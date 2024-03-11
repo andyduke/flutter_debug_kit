@@ -24,6 +24,10 @@ class DebugPanelController with ChangeNotifier {
     opened = false;
   }
 
+  void toggle() {
+    opened = !opened;
+  }
+
   bool get buttonVisible => _buttonVisible;
   bool _buttonVisible = true;
   set buttonVisible(bool newValue) {

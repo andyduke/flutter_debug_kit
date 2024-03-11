@@ -1,8 +1,10 @@
 import 'package:debug_panel/src/controller.dart';
-import 'package:debug_panel/src/floating_button/floating_button_surface.dart';
+import 'package:debug_panel/src/triggers/floating_button/floating_button_trigger.dart';
 import 'package:debug_panel/src/screen/screen.dart';
 import 'package:debug_panel/src/screen_route.dart';
 import 'package:debug_panel/src/settings.dart';
+import 'package:debug_panel/src/triggers/shortcut_trigger.dart';
+import 'package:debug_panel/src/triggers/trigger.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -11,11 +13,12 @@ class DebugPanel extends StatefulWidget {
   final DebugPanelController? controller;
   final DebugPanelBaseSettings settings;
   final Widget? child;
+  final DebugPanelTrigger trigger;
 
-  // TODO: Add Detector builder (default (context, child) => DebugPanelFloatingButtonDetector(child: child))
-  //       DebugPanelShortcutDetector(shortcut: (Alt-F12)) - show debug panel with keyboard shortcut
-  //       DebugPanelShakeDetector - show debug panel on shake
-  //       DebugPanelTwoFingersDetector - show panel with two fingers hold
+  // TODO: Add triggers builder (default (context, child) => DebugPanelFloatingButtonTrigger(child: child))
+  //       DebugPanelShortcutTrigger(shortcut: (Alt-F12)) - show debug panel with keyboard shortcut
+  //       DebugPanelShakeTrigger - show debug panel on shake
+  //       DebugPanelTwoFingersTrigger - show panel with two fingers hold
 
   const DebugPanel({
     super.key,
@@ -23,7 +26,18 @@ class DebugPanel extends StatefulWidget {
     this.controller,
     this.settings = const DebugPanelSettings(),
     required this.child,
+    this.trigger = _defaultTriggers,
   });
+
+  static Widget _defaultTriggers(BuildContext context, DebugPanelController controller, Widget child) {
+    return DebugPanelShortcutTrigger(
+      controller: controller,
+      child: DebugPanelFloatingButtonTrigger(
+        controller: controller,
+        child: child,
+      ),
+    );
+  }
 
   @override
   State<DebugPanel> createState() => DebugPanelState();
@@ -105,13 +119,7 @@ class DebugPanelState extends State<DebugPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final overlay = DebugPanelFloatingButtonSurface(
-      onPressed: () {
-        controller.open();
-      },
-      controller: controller,
-      child: widget.child ?? const SizedBox.shrink(),
-    );
+    final overlay = widget.trigger(context, controller, widget.child ?? const SizedBox.shrink());
 
     if (widget.controller == null) {
       return DebugPanelDefaultController(
