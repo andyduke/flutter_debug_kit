@@ -180,15 +180,17 @@ class AppDebugPanel extends StatelessWidget {
                 subtitle: 'Choose API server', // optional
                 footnote: 'Footnote', // optional
                 collapsed: false, // optional
-                builder: (context) {
+                builder: (context, controller) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Server dropdown emulation
                       const Text('Server dropdown'),
                       ElevatedButton(
                         onPressed: () {
                           context.read<AuthState>().logout();
+                          controller.close();
                         },
                         child: const Text('Switch'),
                       ),
@@ -196,13 +198,7 @@ class AppDebugPanel extends StatelessWidget {
                       //
                       const SizedBox(height: 24),
 
-                      //
-                      const ThemeModeSwitch(text: 'Main App Light Mode?'),
-
-                      //
-                      const SizedBox(height: 24),
-
-                      //
+                      // Dialog test
                       ElevatedButton(
                         onPressed: () {
                           showAboutDialog(
@@ -216,6 +212,13 @@ class AppDebugPanel extends StatelessWidget {
                       ),
                     ],
                   );
+                },
+              ),
+              DebugPanelPageSection(
+                name: 'theme_switch',
+                title: 'Theme Mode',
+                builder: (context, controller) {
+                  return const ThemeModeSwitch(text: 'Main App Light Mode?');
                 },
               ),
 
@@ -296,17 +299,17 @@ class AppDebugPanel extends StatelessWidget {
                 title: 'Section 1',
                 footnote:
                     'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dapibus, ante ultricies adipiscing pulvinar.',
-                builder: (context) => const Text('Section 1'),
+                builder: (context, controller) => const Text('Section 1'),
               ),
               DebugPanelPageSection(
                 name: 'section2',
                 title: 'Section 2',
-                builder: (context) => const Text('Section 2'),
+                builder: (context, controller) => const Text('Section 2'),
               ),
               DebugPanelPageSection(
                 name: 'section3',
                 title: 'Section 3',
-                builder: (context) => Container(color: Colors.blue.shade800, height: 1000),
+                builder: (context, controller) => Container(color: Colors.blue.shade800, height: 1000),
               ),
             },
           ),

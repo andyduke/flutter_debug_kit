@@ -56,7 +56,7 @@ class _DebugPanelScaffoldState extends State<DebugPanelScaffold> {
                 alignment: Alignment.topLeft,
                 child: PrimaryScrollController(
                   controller: page.scrollController,
-                  child: page.build(context),
+                  child: page.build(context, widget.controller),
                 ),
               ),
           ],

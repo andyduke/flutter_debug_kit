@@ -1,3 +1,4 @@
+import 'package:debug_panel/src/controller.dart';
 import 'package:debug_panel/src/pages/base_page.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ abstract class DebugPanelPageBaseSection {
   final String? footnote;
   final bool? collapsed;
 
-  Widget build(BuildContext context);
+  Widget build(BuildContext context, DebugPanelController controller);
 
   DebugPanelPageBaseSection({
     required this.name,
@@ -26,8 +27,10 @@ abstract class DebugPanelPageBaseSection {
   int get hashCode => name.hashCode;
 }
 
+typedef DebugPanelWidgetBuilder = Widget Function(BuildContext context, DebugPanelController controller);
+
 class DebugPanelPageSection extends DebugPanelPageBaseSection {
-  final WidgetBuilder builder;
+  final DebugPanelWidgetBuilder builder;
 
   DebugPanelPageSection({
     required super.name,
@@ -39,7 +42,7 @@ class DebugPanelPageSection extends DebugPanelPageBaseSection {
   });
 
   @override
-  Widget build(BuildContext context) => builder(context);
+  Widget build(BuildContext context, DebugPanelController controller) => builder(context, controller);
 }
 
 class DebugPanelPage extends DebugPanelBasePage {
@@ -62,14 +65,18 @@ class DebugPanelPage extends DebugPanelBasePage {
   final IconData? icon;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, DebugPanelController controller) {
     return SingleChildScrollView(
       child: Container(
         padding: DebugPanelBasePage.defaultPadding,
         child: Column(
           children: [
             // Sections
-            for (var section in sections) _DebugPanelPageSectionView(section: section),
+            for (var section in sections)
+              _DebugPanelPageSectionView(
+                section: section,
+                controller: controller,
+              ),
           ],
         ),
       ),
@@ -79,9 +86,11 @@ class DebugPanelPage extends DebugPanelBasePage {
 
 class _DebugPanelPageSectionView extends StatefulWidget {
   final DebugPanelPageBaseSection section;
+  final DebugPanelController controller;
 
   const _DebugPanelPageSectionView({
     required this.section,
+    required this.controller,
   });
 
   @override
@@ -157,7 +166,7 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
                     // Section body
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
-                      child: widget.section.build(context),
+                      child: widget.section.build(context, widget.controller),
                     ),
 
                     // Footnote

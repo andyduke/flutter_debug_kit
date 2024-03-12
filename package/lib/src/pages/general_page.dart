@@ -18,7 +18,7 @@ class DebugPanelGeneralPage extends DebugPanelPage {
         DebugPanelPageSection(
           name: 'package_info',
           title: 'Application info',
-          builder: (context) => const _PackageInfoDetails(),
+          builder: (context, controller) => const _PackageInfoDetails(),
         ),
 
         // Inherited sections

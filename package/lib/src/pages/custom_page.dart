@@ -1,3 +1,4 @@
+import 'package:debug_panel/src/controller.dart';
 import 'package:debug_panel/src/pages/base_page.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class DebugPanelCustomPage extends DebugPanelBasePage {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, DebugPanelController controller) {
     final theme = Theme.of(context);
 
     return Column(

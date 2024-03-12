@@ -1,3 +1,4 @@
+import 'package:debug_panel/src/controller.dart';
 import 'package:flutter/widgets.dart';
 
 abstract class DebugPanelBasePage {
@@ -7,7 +8,7 @@ abstract class DebugPanelBasePage {
   abstract final String title;
   abstract final IconData? icon;
 
-  Widget build(BuildContext context);
+  Widget build(BuildContext context, DebugPanelController controller);
 
   late final scrollController = ScrollController();
 
