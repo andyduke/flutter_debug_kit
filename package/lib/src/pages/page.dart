@@ -2,40 +2,20 @@ import 'package:debug_panel/src/pages/base_page.dart';
 import 'package:flutter/material.dart';
 
 abstract class DebugPanelPageBaseSection {
-  abstract final String name;
-  abstract final String title;
-  abstract final String? subtitle;
-  abstract final String? footnote;
-  abstract final bool? collapsed;
-  abstract final WidgetBuilder builder;
-}
-
-class DebugPanelPageSection extends DebugPanelPageBaseSection {
-  @override
   final String name;
-
-  @override
   final String title;
-
-  @override
   final String? subtitle;
-
-  @override
   final String? footnote;
-
-  @override
   final bool? collapsed;
 
-  @override
-  final WidgetBuilder builder;
+  Widget build(BuildContext context);
 
-  DebugPanelPageSection({
+  DebugPanelPageBaseSection({
     required this.name,
     required this.title,
     this.subtitle,
     this.footnote,
     this.collapsed,
-    required this.builder,
   });
 
   @override
@@ -44,6 +24,22 @@ class DebugPanelPageSection extends DebugPanelPageBaseSection {
 
   @override
   int get hashCode => name.hashCode;
+}
+
+class DebugPanelPageSection extends DebugPanelPageBaseSection {
+  final WidgetBuilder builder;
+
+  DebugPanelPageSection({
+    required super.name,
+    required super.title,
+    super.subtitle,
+    super.footnote,
+    super.collapsed,
+    required this.builder,
+  });
+
+  @override
+  Widget build(BuildContext context) => builder(context);
 }
 
 class DebugPanelPage extends DebugPanelBasePage {
@@ -117,7 +113,7 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
             },
             behavior: HitTestBehavior.opaque,
             child: MouseRegion(
-              cursor: SystemMouseCursors.click,
+              cursor: (widget.section.collapsed != null) ? SystemMouseCursors.click : MouseCursor.defer,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +142,7 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
             KeyedSubtree(
               key: _bodyKey,
               child: Padding(
-                padding: const EdgeInsets.only(top: 2),
+                padding: const EdgeInsets.only(top: 8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -154,14 +150,14 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
                     // Subtitle
                     if (widget.section.subtitle != null)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: 10),
                         child: Text(widget.section.subtitle!, style: theme.textTheme.bodySmall),
                       ),
 
                     // Section body
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
-                      child: widget.section.builder(context),
+                      child: widget.section.build(context),
                     ),
 
                     // Footnote

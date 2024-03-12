@@ -19,6 +19,7 @@ class DebugPanel extends StatefulWidget {
   final DebugPanelBaseSettings settings;
   final Widget? child;
   final DebugPanelTrigger trigger;
+  final bool enabled;
 
   const DebugPanel({
     super.key,
@@ -27,6 +28,7 @@ class DebugPanel extends StatefulWidget {
     this.settings = const DebugPanelSettings(),
     required this.child,
     this.trigger = _defaultTriggers,
+    this.enabled = true,
   });
 
   static Widget _defaultTriggers(BuildContext context, DebugPanelController controller, Widget child) {
@@ -61,6 +63,7 @@ class DebugPanelState extends State<DebugPanel> {
     super.initState();
 
     controller.addListener(_toggleScreen);
+    controller.enabled = widget.enabled;
   }
 
   @override
@@ -71,6 +74,10 @@ class DebugPanelState extends State<DebugPanel> {
       controller.removeListener(_toggleScreen);
       _controller = null;
       controller.addListener(_toggleScreen);
+    }
+
+    if (oldWidget.enabled != widget.enabled) {
+      controller.enabled = widget.enabled;
     }
   }
 
@@ -86,14 +93,18 @@ class DebugPanelState extends State<DebugPanel> {
   }
 
   void _toggleScreen() async {
-    if (controller.opened && !_screenVisible) {
-      _openScreen();
-    } else if (!controller.opened && _screenVisible) {
-      _closeScreen();
+    if (controller.enabled) {
+      if (controller.opened && !_screenVisible) {
+        _openScreen();
+      } else if (!controller.opened && _screenVisible) {
+        _closeScreen();
+      }
     }
   }
 
   Future<void> _openScreen() async {
+    if (!controller.enabled) return;
+
     _screenVisible = true;
     try {
       await widget.navigatorKey.currentState?.push(
@@ -116,15 +127,18 @@ class DebugPanelState extends State<DebugPanel> {
   }
 
   void _closeScreen() {
+    if (!controller.enabled) return;
+
     widget.navigatorKey.currentState?.popUntil(ModalRoute.withName(_screenRouteName));
     widget.navigatorKey.currentState?.pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final overlay = widget.trigger(context, controller, widget.child ?? const SizedBox.shrink());
+    final body = widget.child ?? const SizedBox.shrink();
+    final overlay = controller.enabled ? widget.trigger(context, controller, body) : body;
 
-    if (widget.controller == null) {
+    if (widget.controller == null && controller.enabled) {
       return DebugPanelDefaultController(
         controller: controller,
         child: overlay,

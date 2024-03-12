@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 class DebugPanelController with ChangeNotifier {
   DebugPanelController({
@@ -10,7 +11,7 @@ class DebugPanelController with ChangeNotifier {
   bool get opened => _opened;
   bool _opened = false;
   set opened(bool newValue) {
-    if (newValue != _opened) {
+    if (newValue != _opened && enabled) {
       _opened = newValue;
       notifyListeners();
     }
@@ -31,8 +32,19 @@ class DebugPanelController with ChangeNotifier {
   bool get buttonVisible => _buttonVisible;
   bool _buttonVisible = true;
   set buttonVisible(bool newValue) {
-    if (newValue != _buttonVisible) {
+    if (newValue != _buttonVisible && enabled) {
       _buttonVisible = newValue;
+      notifyListeners();
+    }
+  }
+
+  @internal
+  bool get enabled => _enabled;
+  bool _enabled = true;
+  @internal
+  set enabled(bool newValue) {
+    if (newValue != _enabled) {
+      _enabled = newValue;
       notifyListeners();
     }
   }

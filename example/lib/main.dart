@@ -166,6 +166,7 @@ class AppDebugPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DebugPanel(
+      // enabled: kDebugMode,
       navigatorKey: MainApp.navigatorKey,
       settings: DebugPanelSettings(
         // buttonVisible: kDebugMode,
