@@ -1,4 +1,6 @@
 import 'package:debug_panel/src/controller.dart';
+import 'package:debug_panel/src/pref_storage/pref_storage.dart';
+import 'package:debug_panel/src/pref_storage/prefs.dart';
 import 'package:debug_panel/src/triggers/floating_button/floating_button_trigger.dart';
 import 'package:debug_panel/src/screen/screen.dart';
 import 'package:debug_panel/src/screen_route.dart';
@@ -55,6 +57,8 @@ class DebugPanelState extends State<DebugPanel> {
   DebugPanelController get controller =>
       _controller ??= widget.controller ?? DebugPanelController(buttonVisible: widget.settings.buttonVisible);
   DebugPanelController? _controller;
+
+  final _prefs = DebugPanelPrefStorage();
 
   bool _screenVisible = false;
 
@@ -136,7 +140,12 @@ class DebugPanelState extends State<DebugPanel> {
   @override
   Widget build(BuildContext context) {
     final body = widget.child ?? const SizedBox.shrink();
-    final overlay = controller.enabled ? widget.trigger(context, controller, body) : body;
+    final overlay = controller.enabled
+        ? DebugPanelPrefs(
+            storage: _prefs,
+            child: widget.trigger(context, controller, body),
+          )
+        : body;
 
     if (widget.controller == null && controller.enabled) {
       return DebugPanelDefaultController(
