@@ -83,6 +83,13 @@ abstract class DebugPanelThemeData {
         bodySmall: TextStyle(fontSize: 14.5, color: Color(0xFFB0BAC2)),
       ),
 
+      // Divider theme
+      dividerTheme: DividerThemeData(
+        color: darkScheme.onSurfaceVariant.withOpacity(0.2),
+        thickness: 1.0,
+        space: 9,
+      ),
+
       // Scrollbar theme
       scrollbarTheme: ScrollbarThemeData(
         thumbVisibility: (kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux)
@@ -143,6 +150,13 @@ abstract class DebugPanelThemeData {
         bodyLarge: TextStyle(fontSize: 18.5),
         bodyMedium: TextStyle(fontSize: 16.5),
         bodySmall: TextStyle(fontSize: 14.5, color: Color(0xFF737271)),
+      ),
+
+      // Divider theme
+      dividerTheme: DividerThemeData(
+        color: lightScheme.onSurfaceVariant.withOpacity(0.2),
+        thickness: 1.0,
+        space: 9,
       ),
 
       // Scrollbar theme

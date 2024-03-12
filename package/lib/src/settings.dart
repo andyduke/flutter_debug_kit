@@ -1,4 +1,6 @@
 import 'package:debug_panel/src/pages/base_page.dart';
+import 'package:debug_panel/src/pages/general_page.dart';
+import 'package:debug_panel/src/pages/shared_prefs_page.dart';
 
 abstract class DebugPanelBaseSettings {
   const DebugPanelBaseSettings();
@@ -12,12 +14,16 @@ abstract class DebugPanelBaseSettings {
 }
 
 class DebugPanelSettings extends DebugPanelBaseSettings {
-  static const defaultPages = <DebugPanelBasePage>{};
+  static final defaultPages = <DebugPanelBasePage>{
+    DebugPanelGeneralPage(),
+    DebugPanelSharedPrefsPage(),
+  };
   static const defaultButtonVisible = true;
   static const defaultKeepButtonPosition = true;
 
   @override
-  final Set<DebugPanelBasePage> pages;
+  Set<DebugPanelBasePage> get pages => _pages ?? defaultPages;
+  final Set<DebugPanelBasePage>? _pages;
 
   @override
   final bool buttonVisible;
@@ -26,10 +32,10 @@ class DebugPanelSettings extends DebugPanelBaseSettings {
   final bool keepButtonPosition;
 
   const DebugPanelSettings({
-    this.pages = defaultPages,
+    Set<DebugPanelBasePage>? pages,
     this.buttonVisible = defaultButtonVisible,
     this.keepButtonPosition = defaultKeepButtonPosition,
-  });
+  }) : _pages = pages;
 
   @override
   bool operator ==(covariant DebugPanelSettings other) {

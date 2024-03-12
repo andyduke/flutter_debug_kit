@@ -2,6 +2,7 @@ import 'package:debug_panel/debug_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MainApp());
@@ -210,6 +211,22 @@ class AppDebugPanel extends StatelessWidget {
                         },
                         child: const Text('Show Dialog'),
                       ),
+
+                      //
+                      const SizedBox(height: 24),
+
+                      //
+                      ElevatedButton(
+                        onPressed: () async {
+                          final sharedPrefs = await SharedPreferences.getInstance();
+                          sharedPrefs.setString('test_string', 'String 1');
+                          sharedPrefs.setBool('test_bool', true);
+                          sharedPrefs.setInt('test_int', 77);
+                          sharedPrefs.setDouble('test_double', 77.1);
+                          sharedPrefs.setStringList('test_string_list', ['String 1', 'String 2']);
+                        },
+                        child: const Text('Fill SharedPrefs'),
+                      ),
                     ],
                   );
                 },
@@ -268,6 +285,8 @@ class AppDebugPanel extends StatelessWidget {
             },
           ),
 
+          DebugPanelSharedPrefsPage(),
+
           DebugPanelCustomPage(
             name: 'log',
             title: 'Log',
@@ -282,12 +301,14 @@ class AppDebugPanel extends StatelessWidget {
             builder: (context) => const Text('Network'),
           ),
 
+          /*
           DebugPanelCustomPage(
             name: 'sharedPrefs',
             title: 'Shared Preferences',
             icon: Icons.history,
             builder: (context) => const Text('Shared Prefs Inspector'),
           ),
+          */
 
           DebugPanelPage(
             name: 'sectionsTest',
