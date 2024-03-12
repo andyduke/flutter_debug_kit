@@ -96,7 +96,7 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 28),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -141,7 +141,7 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
             KeyedSubtree(
               key: _bodyKey,
               child: Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 16),
+                padding: const EdgeInsets.only(top: 8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,

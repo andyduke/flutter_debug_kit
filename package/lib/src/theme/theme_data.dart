@@ -65,9 +65,22 @@ abstract class DebugPanelThemeData {
       // ),
 
       // Text theme
-      // TODO: Enlarge font sizes (or define textScaler?)
       textTheme: const TextTheme(
-        bodySmall: TextStyle(color: Color(0xFFB0BAC2)),
+        displayLarge: TextStyle(fontSize: 57.0),
+        displayMedium: TextStyle(fontSize: 45.0),
+        displaySmall: TextStyle(fontSize: 36.0),
+        headlineLarge: TextStyle(fontSize: 36.0),
+        headlineMedium: TextStyle(fontSize: 32.0),
+        headlineSmall: TextStyle(fontSize: 26.8),
+        titleLarge: TextStyle(fontSize: 24.4),
+        titleMedium: TextStyle(fontSize: 19.2),
+        titleSmall: TextStyle(fontSize: 16.8),
+        labelLarge: TextStyle(fontSize: 16.8),
+        labelMedium: TextStyle(fontSize: 14.4),
+        labelSmall: TextStyle(fontSize: 13.2),
+        bodyLarge: TextStyle(fontSize: 18.5),
+        bodyMedium: TextStyle(fontSize: 16.5),
+        bodySmall: TextStyle(fontSize: 14.5, color: Color(0xFFB0BAC2)),
       ),
 
       // Scrollbar theme
@@ -114,10 +127,23 @@ abstract class DebugPanelThemeData {
       ),
 
       // Text theme
-      // TODO: Enlarge font sizes
       textTheme: const TextTheme(
-          // bodySmall: TextStyle(color: Color(0xFFB0BAC2)),
-          ),
+        displayLarge: TextStyle(fontSize: 57.0),
+        displayMedium: TextStyle(fontSize: 45.0),
+        displaySmall: TextStyle(fontSize: 36.0),
+        headlineLarge: TextStyle(fontSize: 36.0),
+        headlineMedium: TextStyle(fontSize: 32.0),
+        headlineSmall: TextStyle(fontSize: 26.8),
+        titleLarge: TextStyle(fontSize: 24.4),
+        titleMedium: TextStyle(fontSize: 19.2),
+        titleSmall: TextStyle(fontSize: 16.8),
+        labelLarge: TextStyle(fontSize: 16.8),
+        labelMedium: TextStyle(fontSize: 14.4),
+        labelSmall: TextStyle(fontSize: 13.2),
+        bodyLarge: TextStyle(fontSize: 18.5),
+        bodyMedium: TextStyle(fontSize: 16.5),
+        bodySmall: TextStyle(fontSize: 14.5, color: Color(0xFF737271)),
+      ),
 
       // Scrollbar theme
       scrollbarTheme: ScrollbarThemeData(

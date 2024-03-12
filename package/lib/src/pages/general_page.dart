@@ -31,6 +31,7 @@ class DebugPanelGeneralPageSection extends DebugPanelGeneralPageBaseSection {
   });
 }
 
+// TODO: Refactor - composite from DebugPanelPage
 class DebugPanelGeneralPage extends DebugPanelBasePage {
   final List<DebugPanelGeneralPageBaseSection> sections;
 
