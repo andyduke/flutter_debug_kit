@@ -172,7 +172,53 @@ class AppDebugPanel extends StatelessWidget {
         buttonVisible: true,
         pages: {
           DebugPanelGeneralPage(
-            sections: [
+            sections: {
+              DebugPanelPageSection(
+                name: 'server',
+                title: 'API Server',
+                subtitle: 'Choose API server', // optional
+                footnote: 'Footnote', // optional
+                collapsed: false, // optional
+                builder: (context) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Server dropdown'),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<AuthState>().logout();
+                        },
+                        child: const Text('Switch'),
+                      ),
+
+                      //
+                      const SizedBox(height: 24),
+
+                      //
+                      const ThemeModeSwitch(text: 'Main App Light Mode?'),
+
+                      //
+                      const SizedBox(height: 24),
+
+                      //
+                      ElevatedButton(
+                        onPressed: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: 'DebugPanel Demo App',
+                            applicationVersion: '0.1',
+                            applicationLegalese: '(C) Andy Chentsov',
+                          );
+                        },
+                        child: const Text('Show Dialog'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+
+              /*
               DebugPanelGeneralPageSection(
                 title: 'Server',
                 note: 'Choose API server', // optional
@@ -214,7 +260,8 @@ class AppDebugPanel extends StatelessWidget {
                   );
                 },
               ),
-            ],
+              */
+            },
           ),
 
           DebugPanelCustomPage(
@@ -246,7 +293,7 @@ class AppDebugPanel extends StatelessWidget {
                 collapsed: false,
                 name: 'section1',
                 title: 'Section 1',
-                note:
+                footnote:
                     'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dapibus, ante ultricies adipiscing pulvinar.',
                 builder: (context) => const Text('Section 1'),
               ),

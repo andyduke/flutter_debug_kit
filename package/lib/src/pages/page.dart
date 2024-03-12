@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 abstract class DebugPanelPageBaseSection {
   abstract final String name;
   abstract final String title;
-  abstract final String? note;
+  abstract final String? subtitle;
+  abstract final String? footnote;
   abstract final bool? collapsed;
   abstract final WidgetBuilder builder;
 }
@@ -17,7 +18,10 @@ class DebugPanelPageSection extends DebugPanelPageBaseSection {
   final String title;
 
   @override
-  final String? note;
+  final String? subtitle;
+
+  @override
+  final String? footnote;
 
   @override
   final bool? collapsed;
@@ -28,7 +32,8 @@ class DebugPanelPageSection extends DebugPanelPageBaseSection {
   DebugPanelPageSection({
     required this.name,
     required this.title,
-    this.note,
+    this.subtitle,
+    this.footnote,
     this.collapsed,
     required this.builder,
   });
@@ -141,18 +146,29 @@ class _DebugPanelPageSectionViewState extends State<_DebugPanelPageSectionView> 
             KeyedSubtree(
               key: _bodyKey,
               child: Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 2),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    widget.section.builder(context),
+                    // Subtitle
+                    if (widget.section.subtitle != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(widget.section.subtitle!, style: theme.textTheme.bodySmall),
+                      ),
 
-                    // Note
-                    if (widget.section.note != null)
+                    // Section body
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: widget.section.builder(context),
+                    ),
+
+                    // Footnote
+                    if (widget.section.footnote != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
-                        child: Text(widget.section.note!, style: theme.textTheme.bodySmall),
+                        child: Text(widget.section.footnote!, style: theme.textTheme.bodySmall),
                       ),
                   ],
                 ),
