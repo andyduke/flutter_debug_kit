@@ -3,8 +3,11 @@ import 'package:debug_panel/src/dialogs/confirm.dart';
 import 'package:debug_panel/src/pages/base_page.dart';
 import 'package:debug_panel/src/pages/shared_prefs_page/edit_storage_entry_dialog.dart';
 import 'package:debug_panel/src/pages/widgets/key_value_grid.dart';
+import 'package:debug_panel/src/utils/string_ext.dart';
 import 'package:debug_panel/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
 import 'package:debug_panel/src/widgets/filtered_list_view/filtered_list_view.dart';
+import 'package:debug_panel/src/widgets/search_field.dart';
+import 'package:debug_panel/src/widgets/toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -155,19 +158,18 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
 
             return FilteredListView(
               controller: listController,
-              filterBuilder: (context, controller) => _Toolbar(
+              filterBuilder: (context, controller) => Toolbar(
                 leading: [
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: _SearchField(
+                      child: SearchField(
                         onChange: (value) => controller.apply(search: value),
                       ),
                     ),
                   ),
                 ],
                 trailing: [
-                  const SizedBox(width: 16),
                   IconButton(
                     onPressed: keys.isNotEmpty ? () => _clearAll(storage) : null,
                     icon: const Icon(Icons.delete_sweep),
@@ -177,12 +179,11 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
                     ),
                   ),
                 ],
-                divider: false,
               ),
               builder: (context, controller) {
                 final gridKeys = (controller.search == null || controller.search!.isEmpty)
                     ? keys
-                    : keys.where((k) => k.contains(controller.search!));
+                    : keys.where((k) => k.containsInsensitive(controller.search!));
 
                 return KeyValueGrid(
                   entries: {for (var k in gridKeys) k: storage.get(k)},
@@ -204,90 +205,6 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
           }
         }
       },
-    );
-  }
-}
-
-class _Toolbar extends StatelessWidget {
-  final List<Widget> leading;
-  final List<Widget> trailing;
-  final bool divider;
-
-  const _Toolbar({
-    required this.leading,
-    required this.trailing,
-    this.divider = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        border: divider
-            ? Border(bottom: BorderSide(width: 2, color: theme.dividerTheme.color ?? theme.dividerColor))
-            : null,
-      ),
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: (divider ? const EdgeInsets.symmetric(vertical: 6) : const EdgeInsets.only(top: 12, bottom: 2)),
-      child: Row(
-        children: [
-          ...leading,
-          // const Spacer(),
-          ...trailing,
-        ],
-      ),
-    );
-  }
-}
-
-class _SearchField extends StatefulWidget {
-  final String? value;
-  final ValueChanged<String> onChange;
-
-  const _SearchField({
-    // ignore: unused_element
-    this.value,
-    required this.onChange,
-  });
-
-  @override
-  State<_SearchField> createState() => _SearchFieldState();
-}
-
-class _SearchFieldState extends State<_SearchField> {
-  late final textController = TextEditingController(text: widget.value);
-  final focusNode = FocusNode();
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      focusNode: focusNode,
-      controller: textController,
-      onChanged: (value) => widget.onChange(value.trim()),
-      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-      decoration: InputDecoration(
-        hintText: MaterialLocalizations.of(context).searchFieldLabel,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        filled: true,
-        suffixIcon: Padding(
-          padding: const EdgeInsets.only(right: 4),
-          child: IconButton(
-            onPressed: () {
-              textController.text = '';
-              focusNode.unfocus();
-              widget.onChange('');
-            },
-            icon: const Icon(Icons.clear, size: 24),
-          ),
-        ),
-      ),
     );
   }
 }

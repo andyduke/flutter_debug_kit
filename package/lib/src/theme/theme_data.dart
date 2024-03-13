@@ -34,12 +34,28 @@ abstract class DebugPanelThemeData {
     brightness: Brightness.dark,
     seedColor: darkPalette.accentColor,
     background: const Color(0xFF272F2F),
+    secondary: const Color(0xFF56CCF2),
+    secondaryContainer: const Color(0xFF3B7384),
+    onSecondary: Colors.white,
+    onSecondaryContainer: Colors.white,
+    tertiary: const Color(0xFF4F92FF),
+    tertiaryContainer: const Color(0xFF1B4EA3),
+    onTertiary: Colors.white,
+    onTertiaryContainer: const Color(0xFFD8E7FF),
   );
 
   static final lightScheme = ColorScheme.fromSeed(
     brightness: Brightness.light,
     seedColor: lightPalette.accentColor,
     background: const Color(0xFFF3F1F0),
+    secondary: const Color(0xFF56CCF2),
+    secondaryContainer: const Color(0xFF3E5F68),
+    onSecondary: Colors.white,
+    onSecondaryContainer: Colors.white,
+    tertiary: const Color(0xFF5E9CFF),
+    tertiaryContainer: const Color(0xFF205BBA),
+    onTertiary: Colors.white,
+    onTertiaryContainer: const Color(0xFFD8E7FF),
   );
 
   static ThemeData dark() {
@@ -97,6 +113,13 @@ abstract class DebugPanelThemeData {
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         isDense: true,
+      ),
+
+      // Cursor theme
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: darkScheme.primary,
+        selectionColor: darkScheme.primary.withOpacity(0.7),
+        selectionHandleColor: darkScheme.primary,
       ),
 
       // Scrollbar theme
@@ -182,6 +205,13 @@ abstract class DebugPanelThemeData {
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         isDense: true,
+      ),
+
+      // Cursor theme
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: lightScheme.primary,
+        selectionColor: lightScheme.primary.withOpacity(0.35),
+        selectionHandleColor: lightScheme.primary,
       ),
 
       // Extensions

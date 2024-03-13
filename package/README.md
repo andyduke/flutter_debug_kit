@@ -244,3 +244,11 @@ void main() {
   print('$newClasses');
 }
 ```
+
+
+# Design references
+
+- [S8](https://www.setproduct.com/templates/s8)
+- [Material-X](https://www.setproduct.com/templates/material-x)
+- [S8 dark preview](https://dribbble.com/shots/9836296-Mobile-filters-dark-S8-Figma-UI-kit)
+- [Teal light preview](https://dribbble.com/shots/21791516-Mobile-APP-Filters)

@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:debug_panel/debug_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -156,13 +158,63 @@ class AppDebugPanelScope extends StatelessWidget {
   }
 }
 
-class AppDebugPanel extends StatelessWidget {
+class AppDebugPanel extends StatefulWidget {
   final Widget? child;
 
   const AppDebugPanel({
     super.key,
     required this.child,
   });
+
+  @override
+  State<AppDebugPanel> createState() => _AppDebugPanelState();
+}
+
+class _AppDebugPanelState extends State<AppDebugPanel> {
+  final log = DebugPanelLogController(maxLength: 10);
+  final logger = Logger('test');
+
+  DebugPanelLogLevel _loggerLevelToDebugPanel(Level level) {
+    switch (level) {
+      case Level.FINEST:
+      case Level.FINER:
+      case Level.FINE:
+      case Level.CONFIG:
+      case Level.INFO:
+        return DebugPanelLogLevel.info;
+
+      case Level.WARNING:
+        return DebugPanelLogLevel.warning;
+
+      case Level.SEVERE:
+        return DebugPanelLogLevel.error;
+
+      case Level.SHOUT:
+        return DebugPanelLogLevel.debug;
+
+      default:
+        return DebugPanelLogLevel.debug;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    Logger.root.level = Level.ALL; // defaults to Level.INFO
+    Logger.root.onRecord.listen((record) {
+      // ignore: avoid_print
+      print('${record.level.name}: ${record.time}: ${record.message}');
+
+      log.add(DebugPanelLogRecord(
+        level: _loggerLevelToDebugPanel(record.level),
+        message: record.message,
+        time: record.time,
+        error: record.error,
+        stackTrace: record.stackTrace,
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,6 +279,24 @@ class AppDebugPanel extends StatelessWidget {
                         },
                         child: const Text('Fill SharedPrefs'),
                       ),
+                      //
+                      const SizedBox(height: 24),
+
+                      //
+                      ElevatedButton(
+                        onPressed: () async {
+                          logger.info('Info test');
+                          logger.severe('Error test', UnimplementedError(), StackTrace.current);
+
+                          log.debug('Debug msg', tag: 'test');
+                          log.criticalError('Critical err', UnimplementedError(), tag: 'test');
+                          log.error('Err', UnimplementedError(), tag: 'test');
+                          log.warning('Warn', tag: 'test');
+                          log.debug('Dbg', tag: 'test');
+                          log.debug('Dbg 2', tag: 'tagged');
+                        },
+                        child: const Text('Log entry'),
+                      ),
                     ],
                   );
                 },
@@ -286,6 +356,10 @@ class AppDebugPanel extends StatelessWidget {
           ),
 
           DebugPanelSharedPrefsPage(),
+
+          DebugPanelLogPage(
+            log: log,
+          ),
 
           DebugPanelCustomPage(
             name: 'log',
@@ -375,7 +449,7 @@ class AppDebugPanel extends StatelessWidget {
         },
         */
       ),
-      child: child,
+      child: widget.child,
     );
   }
 }
