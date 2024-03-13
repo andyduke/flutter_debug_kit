@@ -91,9 +91,11 @@ abstract class DebugPanelThemeData {
       ),
 
       // Text field theme
-      inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         isDense: true,
       ),
 
@@ -171,6 +173,15 @@ abstract class DebugPanelThemeData {
         thumbVisibility: (kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux)
             ? MaterialStateProperty.all(true)
             : null,
+      ),
+
+      // Text field theme
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        isDense: true,
       ),
 
       // Extensions

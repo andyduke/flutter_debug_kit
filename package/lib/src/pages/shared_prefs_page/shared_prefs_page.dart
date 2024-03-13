@@ -1,9 +1,10 @@
 import 'package:debug_panel/src/controller.dart';
 import 'package:debug_panel/src/dialogs/confirm.dart';
-import 'package:debug_panel/src/dialogs/prompt.dart';
 import 'package:debug_panel/src/pages/base_page.dart';
 import 'package:debug_panel/src/pages/shared_prefs_page/edit_storage_entry_dialog.dart';
 import 'package:debug_panel/src/pages/widgets/key_value_grid.dart';
+import 'package:debug_panel/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
+import 'package:debug_panel/src/widgets/filtered_list_view/filtered_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,7 +16,7 @@ class DebugPanelSharedPrefsPage extends DebugPanelBasePage {
   final String title = 'Shared Prefs';
 
   @override
-  final IconData? icon = Icons.history;
+  final IconData? icon = Icons.text_snippet_rounded;
 
   DebugPanelSharedPrefsPage();
 
@@ -34,51 +35,50 @@ class _SharedPrefsInspector extends StatefulWidget {
 
 class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
   final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+  final listController = FilteredListController();
 
   void reload() {
     setState(() {});
   }
 
   Future<void> _edit(SharedPreferences storage, String key, Object? value) async {
-    // TODO: Replace with EntryEditForm (show different editors for value types)
-    /*
-    showPrompt(
-      context: context,
-      title: 'Change entry',
-      intro: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text('Key:'),
-          TextField(
-            readOnly: true,
-            controller: TextEditingController(text: key),
-          ),
-
-          //
-          const SizedBox(height: 24),
-        ],
-      ),
-      prompt: 'Value:',
-      defaultValue: '$value',
-    ).then((result) {
-      if (result != null) {
-        // TODO: Save result
-
-        reload();
-      }
-    });
-    */
-
     final newValue = await EditStorageEntryDialog.show(
       context: context,
-      title: 'Change entry',
+      title: 'Edit entry',
       name: key,
       value: value,
     );
 
     if (newValue != null) {
-      // TODO: storage.setBool(key, value)
+      switch (newValue.runtimeType) {
+        case String:
+          storage.setString(key, newValue as String);
+          break;
+
+        case int:
+          storage.setInt(key, newValue as int);
+          break;
+
+        case double:
+          storage.setDouble(key, newValue as double);
+          break;
+
+        case bool:
+          storage.setBool(key, newValue as bool);
+          break;
+
+        case List:
+          if (newValue is List<String>) {
+            storage.setStringList(key, newValue);
+          } else {
+            throw Exception('Invalid value type: ${newValue.runtimeType}');
+          }
+          break;
+
+        default:
+          throw Exception('Invalid value type: ${newValue.runtimeType}');
+      }
+
       reload();
     }
   }
@@ -118,6 +118,10 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
           const TextSpan(text: 'Are you sure you want to remove '),
           TextSpan(text: 'all entries', style: TextStyle(fontWeight: FontWeight.w500, color: theme.colorScheme.error)),
           const TextSpan(text: ' from Shared Preferences?'),
+          const TextSpan(text: '\n\n'),
+          TextSpan(
+              text: 'Warning: This operation cannot be undone!',
+              style: TextStyle(fontWeight: FontWeight.w500, color: theme.colorScheme.error)),
         ],
       )),
       yesText: 'Remove all',
@@ -149,35 +153,43 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
             final storage = snapshot.data!;
             final keys = storage.getKeys();
 
-            return Column(
-              children: [
-                // Toolbar
-                _Toolbar(
-                  leading: [
-                    // TODO: Search bar instead of ...
-                    Text('${keys.length} items', style: const TextStyle(fontWeight: FontWeight.w500)),
-                  ],
-                  trailing: [
-                    TextButton.icon(
-                      onPressed: keys.isNotEmpty ? () => _clearAll(storage) : null,
-                      icon: const Icon(Icons.delete_sweep),
-                      label: const Text('Remove all'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: theme.colorScheme.error,
+            return FilteredListView(
+              controller: listController,
+              filterBuilder: (context, controller) => _Toolbar(
+                leading: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: _SearchField(
+                        onChange: (value) => controller.apply(search: value),
                       ),
                     ),
-                  ],
-                ),
-
-                // Grid
-                Expanded(
-                  child: KeyValueGrid(
-                    entries: {for (var k in keys) k: storage.get(k)},
-                    onEdit: (key) => _edit(storage, key, storage.get(key)),
-                    onDelete: (key) => _delete(storage, key),
                   ),
-                ),
-              ],
+                ],
+                trailing: [
+                  const SizedBox(width: 16),
+                  IconButton(
+                    onPressed: keys.isNotEmpty ? () => _clearAll(storage) : null,
+                    icon: const Icon(Icons.delete_sweep),
+                    tooltip: 'Remove all',
+                    style: TextButton.styleFrom(
+                      foregroundColor: theme.colorScheme.error,
+                    ),
+                  ),
+                ],
+                divider: false,
+              ),
+              builder: (context, controller) {
+                final gridKeys = (controller.search == null || controller.search!.isEmpty)
+                    ? keys
+                    : keys.where((k) => k.contains(controller.search!));
+
+                return KeyValueGrid(
+                  entries: {for (var k in gridKeys) k: storage.get(k)},
+                  onEdit: (key) => _edit(storage, key, storage.get(key)),
+                  onDelete: (key) => _delete(storage, key),
+                );
+              },
             );
           } else {
             return Center(
@@ -199,10 +211,12 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
 class _Toolbar extends StatelessWidget {
   final List<Widget> leading;
   final List<Widget> trailing;
+  final bool divider;
 
   const _Toolbar({
     required this.leading,
     required this.trailing,
+    this.divider = true,
   });
 
   @override
@@ -211,17 +225,68 @@ class _Toolbar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(width: 2, color: theme.dividerTheme.color ?? theme.dividerColor)),
+        border: divider
+            ? Border(bottom: BorderSide(width: 2, color: theme.dividerTheme.color ?? theme.dividerColor))
+            : null,
       ),
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: (divider ? const EdgeInsets.symmetric(vertical: 6) : const EdgeInsets.only(top: 12, bottom: 2)),
       child: Row(
         children: [
           ...leading,
-          const Spacer(),
+          // const Spacer(),
           ...trailing,
         ],
+      ),
+    );
+  }
+}
+
+class _SearchField extends StatefulWidget {
+  final String? value;
+  final ValueChanged<String> onChange;
+
+  const _SearchField({
+    // ignore: unused_element
+    this.value,
+    required this.onChange,
+  });
+
+  @override
+  State<_SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<_SearchField> {
+  late final textController = TextEditingController(text: widget.value);
+  final focusNode = FocusNode();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      focusNode: focusNode,
+      controller: textController,
+      onChanged: (value) => widget.onChange(value.trim()),
+      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+      decoration: InputDecoration(
+        hintText: MaterialLocalizations.of(context).searchFieldLabel,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        filled: true,
+        suffixIcon: Padding(
+          padding: const EdgeInsets.only(right: 4),
+          child: IconButton(
+            onPressed: () {
+              textController.text = '';
+              focusNode.unfocus();
+              widget.onChange('');
+            },
+            icon: const Icon(Icons.clear, size: 24),
+          ),
+        ),
       ),
     );
   }
