@@ -1,6 +1,8 @@
 import 'package:debug_panel/src/controller.dart';
 import 'package:debug_panel/src/dialogs/confirm.dart';
+import 'package:debug_panel/src/dialogs/prompt.dart';
 import 'package:debug_panel/src/pages/base_page.dart';
+import 'package:debug_panel/src/pages/shared_prefs_page/edit_storage_entry_dialog.dart';
 import 'package:debug_panel/src/pages/widgets/key_value_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +37,50 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
 
   void reload() {
     setState(() {});
+  }
+
+  Future<void> _edit(SharedPreferences storage, String key, Object? value) async {
+    // TODO: Replace with EntryEditForm (show different editors for value types)
+    /*
+    showPrompt(
+      context: context,
+      title: 'Change entry',
+      intro: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Key:'),
+          TextField(
+            readOnly: true,
+            controller: TextEditingController(text: key),
+          ),
+
+          //
+          const SizedBox(height: 24),
+        ],
+      ),
+      prompt: 'Value:',
+      defaultValue: '$value',
+    ).then((result) {
+      if (result != null) {
+        // TODO: Save result
+
+        reload();
+      }
+    });
+    */
+
+    final newValue = await EditStorageEntryDialog.show(
+      context: context,
+      title: 'Change entry',
+      name: key,
+      value: value,
+    );
+
+    if (newValue != null) {
+      // TODO: storage.setBool(key, value)
+      reload();
+    }
   }
 
   Future<void> _delete(SharedPreferences storage, String key) async {
@@ -108,6 +154,7 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
                 // Toolbar
                 _Toolbar(
                   leading: [
+                    // TODO: Search bar instead of ...
                     Text('${keys.length} items', style: const TextStyle(fontWeight: FontWeight.w500)),
                   ],
                   trailing: [
@@ -126,6 +173,7 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
                 Expanded(
                   child: KeyValueGrid(
                     entries: {for (var k in keys) k: storage.get(k)},
+                    onEdit: (key) => _edit(storage, key, storage.get(key)),
                     onDelete: (key) => _delete(storage, key),
                   ),
                 ),

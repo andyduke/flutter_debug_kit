@@ -90,6 +90,13 @@ abstract class DebugPanelThemeData {
         space: 9,
       ),
 
+      // Text field theme
+      inputDecorationTheme: const InputDecorationTheme(
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        isDense: true,
+      ),
+
       // Scrollbar theme
       scrollbarTheme: ScrollbarThemeData(
         thumbVisibility: (kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux)

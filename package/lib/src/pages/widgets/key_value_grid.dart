@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class KeyValueGrid extends StatelessWidget {
   final Map<String, dynamic> entries;
+  final ValueChanged<String>? onEdit;
   final ValueChanged<String>? onDelete;
 
   const KeyValueGrid({
     super.key,
     required this.entries,
+    this.onEdit,
     this.onDelete,
   });
 
@@ -22,6 +24,9 @@ class KeyValueGrid extends StatelessWidget {
         return _KeyValueTile(
           name: key,
           value: entries[key],
+          onEdit: () {
+            onEdit?.call(key);
+          },
           onDelete: () {
             onDelete?.call(key);
           },
@@ -32,7 +37,7 @@ class KeyValueGrid extends StatelessWidget {
       },
       separatorBuilder: (context, index) => const Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Divider(),
+        child: Divider(height: 1),
       ),
     );
   }
@@ -41,6 +46,7 @@ class KeyValueGrid extends StatelessWidget {
 class _KeyValueTile extends StatelessWidget {
   final String name;
   final Object? value;
+  final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final TextStyle? primaryTextStyle;
   final TextStyle? secondaryTextStyle;
@@ -48,6 +54,7 @@ class _KeyValueTile extends StatelessWidget {
   const _KeyValueTile({
     required this.name,
     required this.value,
+    this.onEdit,
     this.onDelete,
     this.primaryTextStyle,
     this.secondaryTextStyle,
@@ -57,43 +64,47 @@ class _KeyValueTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 6, bottom: 6, right: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Entry name & type
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Entry name
-                Text(name,
-                    style: (primaryTextStyle ?? const TextStyle()).merge(const TextStyle(fontWeight: FontWeight.w500))),
+    return InkWell(
+      onTap: onEdit,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16, top: 10, bottom: 10, right: 6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Entry name & type
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Entry name
+                  Text(name,
+                      style:
+                          (primaryTextStyle ?? const TextStyle()).merge(const TextStyle(fontWeight: FontWeight.w500))),
 
-                // Entry type
-                Text('${value.runtimeType}', style: secondaryTextStyle),
-              ],
+                  // Entry type
+                  Text('${value.runtimeType}', style: secondaryTextStyle),
+                ],
+              ),
             ),
-          ),
 
-          // Entry value
-          const SizedBox(width: 20),
-          Text(
-            '$value',
-            style: (primaryTextStyle ?? const TextStyle()).merge(TextStyle(color: theme.colorScheme.primary)),
-          ),
+            // Entry value
+            const SizedBox(width: 20),
+            Text(
+              '$value',
+              style: (primaryTextStyle ?? const TextStyle()).merge(TextStyle(color: theme.colorScheme.primary)),
+            ),
 
-          // Remove button
-          const SizedBox(width: 4),
-          IconButton(
-            onPressed: onDelete,
-            icon: Icon(Icons.delete, color: theme.colorScheme.error),
-            tooltip: 'Remove entry',
-          ),
-        ],
+            // Remove button
+            const SizedBox(width: 4),
+            IconButton(
+              onPressed: onDelete,
+              icon: Icon(Icons.delete, color: theme.colorScheme.error),
+              tooltip: 'Remove entry',
+            ),
+          ],
+        ),
       ),
     );
   }

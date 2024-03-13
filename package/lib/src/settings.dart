@@ -1,6 +1,6 @@
 import 'package:debug_panel/src/pages/base_page.dart';
 import 'package:debug_panel/src/pages/general_page.dart';
-import 'package:debug_panel/src/pages/shared_prefs_page.dart';
+import 'package:debug_panel/src/pages/shared_prefs_page/shared_prefs_page.dart';
 
 abstract class DebugPanelBaseSettings {
   const DebugPanelBaseSettings();
