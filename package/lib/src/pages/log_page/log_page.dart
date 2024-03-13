@@ -47,6 +47,7 @@ class _LogViewer extends StatefulWidget {
 class _LogViewerState extends State<_LogViewer> {
   final listController = FilteredListController();
   bool selectionMode = false;
+  bool filterBar = false;
 
   Future<void> _clear() async {
     final theme = Theme.of(context);
@@ -76,26 +77,65 @@ class _LogViewerState extends State<_LogViewer> {
 
         return FilteredListView(
           controller: listController,
-          filterBuilder: (context, controller) => Toolbar(
-            leading: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: SearchField(
-                    onChange: (value) => controller.apply(search: value),
+          filterBuilder: (context, controller) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Toolbar(
+                leading: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: SearchField(
+                        onChange: (value) => controller.apply(search: value),
+                      ),
+                    ),
                   ),
-                ),
+                ],
+                trailing: [
+                  // Toggle filter bar button
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        filterBar = !filterBar;
+                      });
+
+                      if (!filterBar) {
+                        controller.reset(search: false);
+                      }
+                    },
+                    icon: const Icon(Icons.filter_alt),
+                    tooltip: 'Toggle filters',
+                    style: TextButton.styleFrom(
+                      foregroundColor: filterBar ? theme.colorScheme.primary : null,
+                    ),
+                  ),
+
+                  // Clear log button
+                  const SizedBox(width: 10),
+                  IconButton(
+                    onPressed: _clear,
+                    icon: const Icon(Icons.delete_sweep),
+                    tooltip: 'Remove all',
+                    style: TextButton.styleFrom(
+                      foregroundColor: theme.colorScheme.error,
+                    ),
+                  ),
+                ],
               ),
-            ],
-            trailing: [
-              IconButton(
-                onPressed: _clear,
-                icon: const Icon(Icons.delete_sweep),
-                tooltip: 'Remove all',
-                style: TextButton.styleFrom(
-                  foregroundColor: theme.colorScheme.error,
+
+              //
+              if (filterBar)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: theme.dividerTheme.color ?? theme.dividerColor),
+                    ),
+                  ),
+                  child: const Text('Filter bar'),
                 ),
-              ),
             ],
           ),
           builder: (context, controller) {
