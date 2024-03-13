@@ -46,7 +46,7 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
       text: Text.rich(TextSpan(
         children: [
           const TextSpan(text: 'Are you sure you want to remove the '),
-          TextSpan(text: key, style: TextStyle(color: theme.colorScheme.primary)),
+          TextSpan(text: key, style: TextStyle(fontWeight: FontWeight.w500, color: theme.colorScheme.error)),
           const TextSpan(text: ' value?'),
         ],
       )),
@@ -56,6 +56,30 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
     ).then((result) {
       if (result) {
         storage.remove(key);
+        reload();
+      }
+    });
+  }
+
+  Future<void> _clearAll(SharedPreferences storage) async {
+    final theme = Theme.of(context);
+
+    showConfirmation(
+      context: context,
+      title: 'Remove all',
+      text: Text.rich(TextSpan(
+        children: [
+          const TextSpan(text: 'Are you sure you want to remove '),
+          TextSpan(text: 'all entries', style: TextStyle(fontWeight: FontWeight.w500, color: theme.colorScheme.error)),
+          const TextSpan(text: ' from Shared Preferences?'),
+        ],
+      )),
+      yesText: 'Remove all',
+      noText: 'Cancel',
+      yesColor: theme.colorScheme.error,
+    ).then((result) {
+      if (result) {
+        storage.clear();
         reload();
       }
     });
@@ -75,14 +99,37 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
           );
         } else {
           if (!snapshot.hasError) {
+            final theme = Theme.of(context);
             final storage = snapshot.data!;
             final keys = storage.getKeys();
 
-            // TODO: Prepend with toolbar: XX items     [*] Clear all
+            return Column(
+              children: [
+                // Toolbar
+                _Toolbar(
+                  leading: [
+                    Text('${keys.length} items', style: const TextStyle(fontWeight: FontWeight.w500)),
+                  ],
+                  trailing: [
+                    TextButton.icon(
+                      onPressed: keys.isNotEmpty ? () => _clearAll(storage) : null,
+                      icon: const Icon(Icons.delete_sweep),
+                      label: const Text('Remove all'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: theme.colorScheme.error,
+                      ),
+                    ),
+                  ],
+                ),
 
-            return KeyValueGrid(
-              entries: {for (var k in keys) k: storage.get(k)},
-              onDelete: (key) => _delete(storage, key),
+                // Grid
+                Expanded(
+                  child: KeyValueGrid(
+                    entries: {for (var k in keys) k: storage.get(k)},
+                    onDelete: (key) => _delete(storage, key),
+                  ),
+                ),
+              ],
             );
           } else {
             return Center(
@@ -97,6 +144,37 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
           }
         }
       },
+    );
+  }
+}
+
+class _Toolbar extends StatelessWidget {
+  final List<Widget> leading;
+  final List<Widget> trailing;
+
+  const _Toolbar({
+    required this.leading,
+    required this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(width: 2, color: theme.dividerTheme.color ?? theme.dividerColor)),
+      ),
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          ...leading,
+          const Spacer(),
+          ...trailing,
+        ],
+      ),
     );
   }
 }

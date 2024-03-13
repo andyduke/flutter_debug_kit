@@ -24,7 +24,7 @@ class _DebugPanelScaffoldState extends State<DebugPanelScaffold> {
 
   late final tabController = CustomTabController(
     length: widget.pages.length,
-  );
+  )..addListener(_resetScrollPosition);
 
   @override
   void dispose() {
@@ -32,6 +32,12 @@ class _DebugPanelScaffoldState extends State<DebugPanelScaffold> {
     scrollController.dispose();
 
     super.dispose();
+  }
+
+  void _resetScrollPosition() {
+    if (scrollController.offset > DebugPanelAppBar.kToolbarHeight) {
+      scrollController.jumpTo(DebugPanelAppBar.kToolbarHeight);
+    }
   }
 
   @override
@@ -51,11 +57,11 @@ class _DebugPanelScaffoldState extends State<DebugPanelScaffold> {
           controller: tabController,
           children: [
             for (var page in widget.pages)
-              Container(
-                width: double.infinity,
-                alignment: Alignment.topLeft,
-                child: PrimaryScrollController(
-                  controller: page.scrollController,
+              _DesktopPrimaryScrollController(
+                controller: scrollController,
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment.topLeft,
                   child: page.build(context, widget.controller),
                 ),
               ),
@@ -63,5 +69,25 @@ class _DebugPanelScaffoldState extends State<DebugPanelScaffold> {
         ),
       ),
     );
+  }
+}
+
+class _DesktopPrimaryScrollController extends StatelessWidget {
+  final ScrollController controller;
+  final Widget child;
+
+  const _DesktopPrimaryScrollController({
+    required this.controller,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final platform = ScrollConfiguration.of(context).getPlatform(context);
+    final isDesktop = (platform == TargetPlatform.windows) ||
+        (platform == TargetPlatform.macOS) ||
+        (platform == TargetPlatform.linux);
+
+    return isDesktop ? PrimaryScrollController(controller: controller, child: child) : child;
   }
 }

@@ -1,11 +1,11 @@
 import 'package:debug_panel/src/pages/base_page.dart';
-import 'package:debug_panel/src/screen/screen.dart';
 import 'package:debug_panel/src/screen/widgets/app_bar_tabs.dart';
 import 'package:debug_panel/src/widgets/custom_tabs/custom_tab_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class DebugPanelAppBar extends StatelessWidget {
+  static const kToolbarHeight = 44.0;
+
   // final TabController tabController;
   final CustomTabController tabController;
   final ScrollController scrollController;
@@ -39,7 +39,7 @@ class DebugPanelAppBar extends StatelessWidget {
           ),
         const SizedBox(width: 8),
       ],
-      toolbarHeight: 44.0,
+      toolbarHeight: kToolbarHeight,
 
       // Settings
       floating: true,

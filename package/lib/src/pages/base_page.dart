@@ -10,8 +10,6 @@ abstract class DebugPanelBasePage {
 
   Widget build(BuildContext context, DebugPanelController controller);
 
-  late final scrollController = ScrollController();
-
   @override
   bool operator ==(covariant DebugPanelBasePage other) => (name == other.name);
 
