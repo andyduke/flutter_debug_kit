@@ -7,6 +7,7 @@ import 'package:debug_panel/src/utils/string_ext.dart';
 import 'package:debug_panel/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
 import 'package:debug_panel/src/widgets/filtered_list_view/filtered_list_view.dart';
 import 'package:debug_panel/src/widgets/floating_bottom_bar.dart';
+import 'package:debug_panel/src/widgets/keyboard_dismisser.dart';
 import 'package:debug_panel/src/widgets/search_field.dart';
 import 'package:debug_panel/src/widgets/toolbar.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +112,7 @@ class _LogViewerState extends State<_LogViewer> {
                     ),
                   ),
 
+                  // TODO: Move to dropdown menu?
                   // Clear log button
                   const SizedBox(width: 10),
                   IconButton(
@@ -147,23 +149,26 @@ class _LogViewerState extends State<_LogViewer> {
 
             return Stack(
               children: [
-                ListView.builder(
-                  padding: const EdgeInsets.only(
-                      bottom: FloatingBottomBar.kFloatingBarHeight + FloatingBottomBar.kFloatingBarOffset + 8),
-                  itemCount: filteredLog.length,
-                  itemBuilder: (context, index) {
-                    final record = filteredLog.elementAt(index);
+                KeyboardDismisser(
+                  child: ListView.builder(
+                    // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.only(
+                        bottom: FloatingBottomBar.kFloatingBarHeight + FloatingBottomBar.kFloatingBarOffset + 8),
+                    itemCount: filteredLog.length,
+                    itemBuilder: (context, index) {
+                      final record = filteredLog.elementAt(index);
 
-                    return ListTile(
-                      onLongPress: () {
-                        setState(() {
-                          selectionMode = !selectionMode;
-                        });
-                      },
-                      title: Text('${record.tag} | ${record.message}'),
-                      subtitle: Text('${record.time}'),
-                    );
-                  },
+                      return ListTile(
+                        onLongPress: () {
+                          setState(() {
+                            selectionMode = !selectionMode;
+                          });
+                        },
+                        title: Text('${record.tag} | ${record.message}'),
+                        subtitle: Text('${record.time}'),
+                      );
+                    },
+                  ),
                 ),
 
                 // Floating bottom bar

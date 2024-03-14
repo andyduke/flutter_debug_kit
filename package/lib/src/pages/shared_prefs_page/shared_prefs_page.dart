@@ -6,6 +6,7 @@ import 'package:debug_panel/src/pages/widgets/key_value_grid.dart';
 import 'package:debug_panel/src/utils/string_ext.dart';
 import 'package:debug_panel/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
 import 'package:debug_panel/src/widgets/filtered_list_view/filtered_list_view.dart';
+import 'package:debug_panel/src/widgets/keyboard_dismisser.dart';
 import 'package:debug_panel/src/widgets/search_field.dart';
 import 'package:debug_panel/src/widgets/toolbar.dart';
 import 'package:flutter/material.dart';
@@ -185,10 +186,13 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
                     ? keys
                     : keys.where((k) => k.containsInsensitive(controller.search!));
 
-                return KeyValueGrid(
-                  entries: {for (var k in gridKeys) k: storage.get(k)},
-                  onEdit: (key) => _edit(storage, key, storage.get(key)),
-                  onDelete: (key) => _delete(storage, key),
+                return KeyboardDismisser(
+                  child: KeyValueGrid(
+                    // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                    entries: {for (var k in gridKeys) k: storage.get(k)},
+                    onEdit: (key) => _edit(storage, key, storage.get(key)),
+                    onDelete: (key) => _delete(storage, key),
+                  ),
                 );
               },
             );

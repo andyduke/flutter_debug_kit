@@ -4,12 +4,14 @@ class KeyValueGrid extends StatelessWidget {
   final Map<String, dynamic> entries;
   final ValueChanged<String>? onEdit;
   final ValueChanged<String>? onDelete;
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
   const KeyValueGrid({
     super.key,
     required this.entries,
     this.onEdit,
     this.onDelete,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
   });
 
   @override
@@ -17,6 +19,7 @@ class KeyValueGrid extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListView.separated(
+      keyboardDismissBehavior: keyboardDismissBehavior,
       padding: EdgeInsets.zero,
       itemCount: entries.length,
       itemBuilder: (context, index) {
