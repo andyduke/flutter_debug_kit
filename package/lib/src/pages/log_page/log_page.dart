@@ -175,6 +175,7 @@ class _LogViewerState extends State<_LogViewer> {
 
                       final record = filteredLog.elementAt(index - ((!isDesktop && filterBar) ? 1 : 0));
 
+                      // TODO: LogRecordTile
                       return ListTile(
                         onLongPress: () {
                           setState(() {

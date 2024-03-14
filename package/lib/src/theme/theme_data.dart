@@ -56,6 +56,8 @@ abstract class DebugPanelThemeData {
     tertiaryContainer: const Color(0xFF205BBA),
     onTertiary: Colors.white,
     onTertiaryContainer: const Color(0xFFD8E7FF),
+    // surfaceVariant: const Color(0xFFD8E7FF),
+    // onSurfaceVariant: Colors.black,
   );
 
   static ThemeData dark() {
@@ -63,6 +65,8 @@ abstract class DebugPanelThemeData {
       brightness: Brightness.dark,
       colorScheme: darkScheme,
       useMaterial3: true,
+
+      focusColor: darkScheme.secondaryContainer,
 
       // AppBar theme
       appBarTheme: AppBarTheme(
@@ -154,6 +158,8 @@ abstract class DebugPanelThemeData {
       brightness: Brightness.light,
       colorScheme: lightScheme,
       useMaterial3: true,
+
+      focusColor: lightScheme.surfaceVariant,
 
       // AppBar theme
       appBarTheme: AppBarTheme(

@@ -21,3 +21,5 @@ export 'src/triggers/glyph/glyph_detector.dart';
 export 'src/triggers/glyph/glyph_trigger.dart';
 
 export 'src/debug_panel.dart' hide DebugPanelState;
+
+export 'src/widgets/dropdown_button.dart';

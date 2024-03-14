@@ -218,6 +218,8 @@ class _AppDebugPanelState extends State<AppDebugPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return DebugPanel(
       // enabled: kDebugMode,
       navigatorKey: MainApp.navigatorKey,
@@ -247,6 +249,126 @@ class _AppDebugPanelState extends State<AppDebugPanel> {
                         },
                         child: const Text('Switch'),
                       ),
+
+                      // Dropdown styling test
+                      const SizedBox(height: 24),
+                      DebugPanelDropdownButton<int>(
+                        itemHeight: 60,
+
+                        //
+                        value: 2,
+                        items: [
+                          const DropdownMenuItem(
+                            value: 1,
+                            child: Text('Item 1'),
+                          ),
+                          const DropdownMenuItem(
+                            value: 2,
+                            child: Text('Item 2'),
+                          ),
+                          const DropdownMenuItem(
+                            value: 3,
+                            child: Text('Item 3'),
+                          ),
+
+                          //
+                          DropdownMenuItem(
+                            value: 4,
+                            alignment: Alignment.centerLeft,
+                            child: Builder(builder: (context) {
+                              final theme = Theme.of(context);
+
+                              return OverflowBox(
+                                alignment: Alignment.centerLeft,
+                                maxWidth: 320,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 3.0, bottom: 3.0),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ConstrainedBox(
+                                        constraints: BoxConstraints.tightFor(
+                                          height: ((theme.textTheme.titleLarge?.fontSize ?? 32) * 0.9).clamp(18, 36) *
+                                              (theme.textTheme.titleLarge?.height ?? 1.0),
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: 12.0),
+                                            child: (/*is selected */ false)
+                                                ? Padding(
+                                                    padding: const EdgeInsets.only(top: 3),
+                                                    child:
+                                                        Icon(Icons.circle, color: theme.colorScheme.primary, size: 8),
+                                                  )
+                                                : const SizedBox(width: 8),
+                                          ),
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Item 5',
+                                            style: theme.textTheme.titleLarge?.copyWith(
+                                              color: theme.colorScheme.primary,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize:
+                                                  ((theme.textTheme.titleLarge?.fontSize ?? 32) * 0.9).clamp(18, 36),
+                                            ),
+                                          ),
+                                          Text('subtitle', style: theme.textTheme.titleSmall),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ],
+                        onChanged: (value) {},
+                      ),
+                      /*
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton<int>(
+                          isExpanded: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          // itemHeight: 60,
+                          borderRadius: BorderRadius.circular(5),
+                          icon: const Icon(Icons.expand_more),
+                          // dropdownColor: Theme.of(context).colorScheme.secondaryContainer,
+                          // focusColor: Theme.of(context).colorScheme.secondaryContainer,
+                          // dropdownColor: Theme.of(context).cardColor,
+                          // focusColor: Theme.of(context).colorScheme.secondaryContainer,
+                          dropdownColor: Theme.of(context).colorScheme.surfaceVariant,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+
+                          //
+                          value: 2,
+                          items: const [
+                            DropdownMenuItem(
+                              value: 1,
+                              child: Text('Item 1'),
+                            ),
+                            DropdownMenuItem(
+                              value: 2,
+                              child: Text('Item 2'),
+                            ),
+                            DropdownMenuItem(
+                              value: 3,
+                              child: Text('Item 3'),
+                            ),
+                          ],
+                          onChanged: (v) {},
+                        ),
+                      ),
+                      */
 
                       //
                       const SizedBox(height: 24),
