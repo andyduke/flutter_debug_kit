@@ -54,6 +54,7 @@ class _DebugPanelScaffoldState extends State<DebugPanelScaffold> {
           ),
         ],
         body: CustomTabBarView(
+          physics: const NeverScrollableScrollPhysics(),
           controller: tabController,
           children: [
             for (var page in widget.pages)

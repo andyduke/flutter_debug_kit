@@ -3,9 +3,12 @@ import 'package:debug_panel/src/dialogs/confirm.dart';
 import 'package:debug_panel/src/pages/base_page.dart';
 import 'package:debug_panel/src/pages/log_page/models/log_controller.dart';
 import 'package:debug_panel/src/pages/log_page/models/log_history.dart';
+import 'package:debug_panel/src/pages/log_page/models/log_record.dart';
 import 'package:debug_panel/src/utils/string_ext.dart';
+import 'package:debug_panel/src/widgets/filter_bar.dart';
 import 'package:debug_panel/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
 import 'package:debug_panel/src/widgets/filtered_list_view/filtered_list_view.dart';
+import 'package:debug_panel/src/widgets/filtered_list_view/models/filter_data.dart';
 import 'package:debug_panel/src/widgets/floating_bottom_bar.dart';
 import 'package:debug_panel/src/widgets/keyboard_dismisser.dart';
 import 'package:debug_panel/src/widgets/search_field.dart';
@@ -45,8 +48,19 @@ class _LogViewer extends StatefulWidget {
   State<_LogViewer> createState() => _LogViewerState();
 }
 
+class _LogFilterData extends FilterData {
+  final DebugPanelLogLevel? level;
+
+  _LogFilterData({
+    required this.level,
+  });
+
+  @override
+  String toString() => '_LogFilterData(${level ?? 'none'})';
+}
+
 class _LogViewerState extends State<_LogViewer> {
-  final listController = FilteredListController();
+  final listController = FilteredListController<_LogFilterData>();
   bool selectionMode = false;
   bool filterBar = false;
 
@@ -76,7 +90,7 @@ class _LogViewerState extends State<_LogViewer> {
       builder: (context, child) {
         final logReversed = widget.log.reversed;
 
-        return FilteredListView(
+        return FilteredListView<_LogFilterData>(
           controller: listController,
           filterBuilder: (context, controller) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -129,23 +143,54 @@ class _LogViewerState extends State<_LogViewer> {
               //
               if (filterBar)
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  // margin: const EdgeInsets.symmetric(horizontal: 16),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: theme.dividerTheme.color ?? theme.dividerColor),
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FilterBar<DebugPanelLogLevel?>(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        value: controller.filter?.level,
+                        items: {
+                          FilterBarItem(
+                            child: const Text('All'),
+                            value: null,
+                          ),
+                          for (var l in DebugPanelLogLevel.values)
+                            FilterBarItem(
+                              child: Text(l.name),
+                              value: l,
+                            ),
+                        },
+                        onChange: (value) {
+                          setState(() {
+                            controller.apply(filter: _LogFilterData(level: value));
+                          });
+                        },
+                      ),
+
+                      // Bottom divider
+                      const Padding(
+                        padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                        child: Divider(height: 1),
+                      ),
+                    ],
                   ),
-                  child: const Text('Filter bar'),
                 ),
             ],
           ),
           builder: (context, controller) {
-            final filteredLog = (controller.search != null && controller.search!.isNotEmpty)
-                ? logReversed.where((e) =>
-                    e.message.containsInsensitive(controller.search!) ||
-                    (e.tag?.containsInsensitive(controller.search!) ?? false))
-                : logReversed;
+            final filteredLog =
+                ((controller.search != null && controller.search!.isNotEmpty) || (controller.filter?.level != null))
+                    ? logReversed.where(
+                        (e) =>
+                            ((controller.search == null) ||
+                                (e.message.containsInsensitive(controller.search!) ||
+                                    (e.tag?.containsInsensitive(controller.search!) ?? false))) &&
+                            (controller.filter?.level == null || e.level == controller.filter?.level),
+                      )
+                    : logReversed;
 
             return Stack(
               children: [

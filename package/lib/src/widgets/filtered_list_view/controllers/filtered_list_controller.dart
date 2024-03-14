@@ -43,4 +43,8 @@ class FilteredListController<F extends FilterData> with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  @override
+  String toString() =>
+      'FilteredListController(search: ${(search?.isNotEmpty ?? false) ? search : '<empty>'}, filter: $filter)';
 }
