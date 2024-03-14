@@ -35,7 +35,7 @@ class FilterBar<T> extends StatelessWidget {
     return ScrollConfiguration(
       behavior: const ScrollBehavior().copyWith(scrollbars: false),
       child: SizedBox(
-        height: 44,
+        height: 42,
         child: ListView.builder(
           padding: padding,
           scrollDirection: Axis.horizontal,
@@ -76,6 +76,7 @@ class _FilterBarButton extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Container(
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
           border: Border.all(
@@ -84,7 +85,7 @@ class _FilterBarButton extends StatelessWidget {
           ),
           color: selected ? theme.colorScheme.secondaryContainer : null,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: DefaultTextStyle.merge(
           style:
               TextStyle(fontWeight: FontWeight.w500, color: selected ? theme.colorScheme.onSecondaryContainer : null),

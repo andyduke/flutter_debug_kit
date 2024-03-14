@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:debug_panel/src/controller.dart';
 import 'package:debug_panel/src/dialogs/confirm.dart';
 import 'package:debug_panel/src/pages/base_page.dart';
@@ -63,6 +65,8 @@ class _LogViewerState extends State<_LogViewer> {
   final listController = FilteredListController<_LogFilterData>();
   bool selectionMode = false;
   bool filterBar = false;
+
+  final bool isDesktop = Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
   Future<void> _clear() async {
     final theme = Theme.of(context);
@@ -141,43 +145,7 @@ class _LogViewerState extends State<_LogViewer> {
               ),
 
               //
-              if (filterBar)
-                Container(
-                  // margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FilterBar<DebugPanelLogLevel?>(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        value: controller.filter?.level,
-                        items: {
-                          FilterBarItem(
-                            child: const Text('All'),
-                            value: null,
-                          ),
-                          for (var l in DebugPanelLogLevel.values)
-                            FilterBarItem(
-                              child: Text(l.name),
-                              value: l,
-                            ),
-                        },
-                        onChange: (value) {
-                          setState(() {
-                            controller.apply(filter: _LogFilterData(level: value));
-                          });
-                        },
-                      ),
-
-                      // Bottom divider
-                      const Padding(
-                        padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-                        child: Divider(height: 1),
-                      ),
-                    ],
-                  ),
-                ),
+              if (isDesktop && filterBar) _LogPageFilterBar(controller: controller),
             ],
           ),
           builder: (context, controller) {
@@ -199,9 +167,13 @@ class _LogViewerState extends State<_LogViewer> {
                     // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: const EdgeInsets.only(
                         bottom: FloatingBottomBar.kFloatingBarHeight + FloatingBottomBar.kFloatingBarOffset + 8),
-                    itemCount: filteredLog.length,
+                    itemCount: filteredLog.length + ((!isDesktop && filterBar) ? 1 : 0),
                     itemBuilder: (context, index) {
-                      final record = filteredLog.elementAt(index);
+                      if ((!isDesktop && filterBar) && index == 0) {
+                        return _LogPageFilterBar(controller: controller);
+                      }
+
+                      final record = filteredLog.elementAt(index - ((!isDesktop && filterBar) ? 1 : 0));
 
                       return ListTile(
                         onLongPress: () {
@@ -255,6 +227,54 @@ class _LogViewerState extends State<_LogViewer> {
           },
         );
       },
+    );
+  }
+}
+
+class _LogPageFilterBar extends StatelessWidget {
+  final FilteredListController<_LogFilterData> controller;
+
+  const _LogPageFilterBar({
+    super.key,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // margin: const EdgeInsets.symmetric(horizontal: 16),
+      // padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.only(top: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FilterBar<DebugPanelLogLevel?>(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            value: controller.filter?.level,
+            items: {
+              FilterBarItem(
+                child: const Text('All'),
+                value: null,
+              ),
+              for (var l in DebugPanelLogLevel.values)
+                FilterBarItem(
+                  child: Text(l.name),
+                  value: l,
+                ),
+            },
+            onChange: (value) {
+              controller.apply(filter: _LogFilterData(level: value));
+            },
+          ),
+
+          // Bottom divider
+          const Padding(
+            padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+            child: Divider(height: 1),
+          ),
+        ],
+      ),
     );
   }
 }

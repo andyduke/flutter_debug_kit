@@ -171,7 +171,7 @@ class AppDebugPanel extends StatefulWidget {
 }
 
 class _AppDebugPanelState extends State<AppDebugPanel> {
-  final log = DebugPanelLogController(maxLength: 10);
+  final log = DebugPanelLogController(/*maxLength: 10*/);
   final logger = Logger('test');
 
   DebugPanelLogLevel _loggerLevelToDebugPanel(Level level) {
