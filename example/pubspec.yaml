@@ -1,5 +1,5 @@
 name: debug_panel_example
-description: "A new Flutter project."
+description: "DebugPanel example."
 publish_to: 'none'
 version: 0.1.0
 
@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   debug_panel:
-    path: ../package/
+    path: ../packages/debug_panel
   provider: ^6.1.1
   shared_preferences: ^2.2.2
   logging: ^1.2.0
