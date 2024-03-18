@@ -14,6 +14,12 @@ export 'src/pages/log_page/models/log_record.dart';
 export 'src/pages/log_page/models/log_controller.dart';
 export 'src/pages/log_page/log_page.dart';
 
+export 'src/pages/http_log_page/log_entry/http_request_info.dart';
+export 'src/pages/http_log_page/log_entry/http_response_info.dart';
+export 'src/pages/http_log_page/log_entry/http_log_entry.dart';
+export 'src/pages/http_log_page/http_log_controller.dart';
+export 'src/pages/http_log_page/http_log_page.dart';
+
 export 'src/triggers/trigger.dart';
 export 'src/triggers/floating_button/floating_button_trigger.dart';
 export 'src/triggers/shortcut_trigger.dart';

@@ -157,7 +157,7 @@ class DebugPanelLogHistory extends DelegatingList<DebugPanelLogRecord> with Chan
   }
 
   void _trimLimit() {
-    if ((maxLength != -1) && (length > maxLength)) {
+    if ((maxLength > 0) && (length > maxLength)) {
       super.removeRange(0, length - maxLength);
     }
   }

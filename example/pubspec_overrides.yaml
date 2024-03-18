@@ -1,0 +1,5 @@
+dependency_overrides:
+  debug_panel:
+    path: ../packages/debug_panel
+  http_middleware:
+    path: ../../http_middleware/package

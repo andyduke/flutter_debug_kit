@@ -149,6 +149,7 @@ class _LogViewerState extends State<_LogViewer> {
             ],
           ),
           builder: (context, controller) {
+            // TODO: Refactor - extract to filter method
             final filteredLog =
                 ((controller.search != null && controller.search!.isNotEmpty) || (controller.filter?.level != null))
                     ? logReversed.where(
