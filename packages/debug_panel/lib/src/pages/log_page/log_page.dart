@@ -39,6 +39,7 @@ class DebugPanelLogPage extends DebugPanelBasePage {
   }
 }
 
+// TODO: Refactor with LogViewScaffold
 class _LogViewer extends StatefulWidget {
   final DebugPanelLogHistory log;
 
