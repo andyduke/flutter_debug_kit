@@ -281,9 +281,38 @@ class ExampleAppDebugKitState extends State<ExampleAppDebugKit> {
               ),
               DebugKitPanelPageSection(
                 name: 'theme_switch',
-                title: 'Theme Mode',
+                title: 'Theme',
                 builder: (context, controller) {
-                  return const ThemeModeSwitch(text: 'Main App Light Mode?');
+                  return const ThemeModeSwitch();
+                },
+              ),
+
+              // Floating button visibility
+              DebugKitPanelPageSection(
+                name: 'button_visibility',
+                title: 'Floating Button Visibility',
+                builder: (context, controller) {
+                  return ListenableBuilder(
+                    listenable: controller,
+                    builder: (context, child) => StatefulBuilder(
+                      builder: (context, setState) {
+                        return Row(
+                          children: [
+                            const Text('Not visible'),
+                            const SizedBox(width: 8),
+                            Switch.adaptive(
+                              value: controller.buttonVisible,
+                              onChanged: (newValue) => setState(() {
+                                controller.buttonVisible = newValue;
+                              }),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text('Visible'),
+                          ],
+                        );
+                      },
+                    ),
+                  );
                 },
               ),
 

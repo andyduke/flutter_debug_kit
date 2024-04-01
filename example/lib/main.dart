@@ -221,11 +221,8 @@ class DemoScreen extends StatelessWidget {
 }
 
 class ThemeModeSwitch extends StatelessWidget {
-  final String text;
-
   const ThemeModeSwitch({
     super.key,
-    this.text = 'Light mode?',
   });
 
   @override
@@ -238,6 +235,8 @@ class ThemeModeSwitch extends StatelessWidget {
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const Text('Dark'),
+                const SizedBox(width: 8),
                 Switch(
                   value: mode == ThemeMode.light,
                   onChanged: (value) {
@@ -247,13 +246,12 @@ class ThemeModeSwitch extends StatelessWidget {
                   },
                 ),
                 const SizedBox(width: 8),
-                child!,
+                const Text('Light'),
               ],
             );
           },
         );
       },
-      child: Text(text),
     );
   }
 }

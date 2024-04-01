@@ -42,6 +42,34 @@ class _DebugKitFloatingButtonTriggerState extends State<DebugKitFloatingButtonTr
   Offset? position;
 
   @override
+  void initState() {
+    super.initState();
+
+    widget.controller.addListener(_update);
+  }
+
+  @override
+  void didUpdateWidget(covariant DebugKitFloatingButtonTrigger oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.controller != oldWidget.controller) {
+      oldWidget.controller.removeListener(_update);
+      widget.controller.addListener(_update);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_update);
+
+    super.dispose();
+  }
+
+  void _update() {
+    setState(() {});
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
