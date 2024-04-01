@@ -1,5 +1,5 @@
-name: debug_panel_example
-description: "DebugPanel example."
+name: debug_kit_example
+description: "DebugKit example."
 publish_to: 'none'
 version: 0.1.0
 
@@ -9,12 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  debug_panel:
-    git:
-      url: https://github.com/andyduke/flutter_debug_panel.git
-      path: packages/debug_panel
-  debug_panel_http:
-    path: ../packages/debug_panel_http
+  debug_kit:
+    path: ../packages/debug_kit
+  debug_kit_http:
+    path: ../packages/debug_kit_http
   http_middleware:
     git:
       url: https://github.com/andyduke/dart_http_middleware.git

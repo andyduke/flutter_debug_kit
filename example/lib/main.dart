@@ -1,10 +1,10 @@
-import 'package:debug_panel/debug_panel.dart';
-import 'package:debug_panel_http/debug_panel_http.dart';
+import 'package:debug_kit/debug_kit.dart';
+import 'package:debug_kit_example/app_debug_panel.dart';
+import 'package:debug_kit_http/debug_kit_http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_middleware/http_middleware.dart';
 import 'package:provider/provider.dart';
-import 'package:debug_panel_example/app_debug_panel.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -145,7 +145,7 @@ class AuthState with ChangeNotifier {
 }
 
 class ApiClient {
-  final DebugPanelHttpLogController? logController;
+  final DebugKitHttpLogController? logController;
   late final http.Client client;
 
   ApiClient({
@@ -154,7 +154,7 @@ class ApiClient {
     client = HttpMiddlewareClient(
       http.Client(),
       middleware: [
-        if (logController != null) DebugPanelHttpLogMiddleware(log: logController!),
+        if (logController != null) DebugKitHttpLogMiddleware(log: logController!),
       ],
     );
   }
@@ -233,7 +233,7 @@ class DemoScreen extends StatelessWidget {
             //
             ElevatedButton(
               onPressed: () {
-                DebugPanelController.maybeOf(context)?.open();
+                DebugKitController.maybeOf(context)?.open();
               },
               child: const Text('Open DebugPanel'),
             ),

@@ -1,3 +1,3 @@
-# debug_panel_example
+# debug_kit_example
 
 A new Flutter project.

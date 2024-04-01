@@ -1,5 +1,5 @@
-import 'package:debug_panel/debug_panel.dart';
-import 'package:debug_panel_example/main.dart';
+import 'package:debug_kit/debug_kit.dart';
+import 'package:debug_kit_example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -22,30 +22,30 @@ class AppDebugPanel extends StatefulWidget {
 }
 
 class AppDebugPanelState extends State<AppDebugPanel> {
-  final log = DebugPanelLogController(/*maxLength: 10*/);
+  final log = DebugKitLogController(/*maxLength: 10*/);
   final logger = Logger('test');
-  final httpLog = DebugPanelHttpLogController();
+  final httpLog = DebugKitHttpLogController();
 
-  DebugPanelLogLevel _loggerLevelToDebugPanel(Level level) {
+  DebugKitLogLevel _loggerLevelToDebugPanel(Level level) {
     switch (level) {
       case Level.FINEST:
       case Level.FINER:
       case Level.FINE:
       case Level.CONFIG:
       case Level.INFO:
-        return DebugPanelLogLevel.info;
+        return DebugKitLogLevel.info;
 
       case Level.WARNING:
-        return DebugPanelLogLevel.warning;
+        return DebugKitLogLevel.warning;
 
       case Level.SEVERE:
-        return DebugPanelLogLevel.error;
+        return DebugKitLogLevel.error;
 
       case Level.SHOUT:
-        return DebugPanelLogLevel.debug;
+        return DebugKitLogLevel.debug;
 
       default:
-        return DebugPanelLogLevel.debug;
+        return DebugKitLogLevel.debug;
     }
   }
 
@@ -58,7 +58,7 @@ class AppDebugPanelState extends State<AppDebugPanel> {
       // ignore: avoid_print
       print('${record.level.name}: ${record.time}: ${record.message}');
 
-      log.add(DebugPanelLogRecord(
+      log.add(DebugKitLogRecord(
         level: _loggerLevelToDebugPanel(record.level),
         message: record.message,
         time: record.time,
@@ -72,16 +72,16 @@ class AppDebugPanelState extends State<AppDebugPanel> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return DebugPanel(
+    return DebugKit(
       // enabled: kDebugMode,
       navigatorKey: MainApp.navigatorKey,
-      settings: DebugPanelSettings(
+      settings: DebugKitSettings(
         // buttonVisible: kDebugMode,
         buttonVisible: true,
         pages: {
-          DebugPanelGeneralPage(
+          DebugKitPanelGeneralPage(
             sections: {
-              DebugPanelPageSection(
+              DebugKitPanelPageSection(
                 name: 'server',
                 title: 'API Server',
                 subtitle: 'Choose API server', // optional
@@ -104,7 +104,7 @@ class AppDebugPanelState extends State<AppDebugPanel> {
 
                       // Dropdown styling test
                       const SizedBox(height: 24),
-                      DebugPanelDropdownButton<int>(
+                      DebugKitPanelDropdownButton<int>(
                         itemHeight: 60,
 
                         //
@@ -275,7 +275,7 @@ class AppDebugPanelState extends State<AppDebugPanel> {
                   );
                 },
               ),
-              DebugPanelPageSection(
+              DebugKitPanelPageSection(
                 name: 'theme_switch',
                 title: 'Theme Mode',
                 builder: (context, controller) {
@@ -329,24 +329,24 @@ class AppDebugPanelState extends State<AppDebugPanel> {
             },
           ),
 
-          DebugPanelSharedPrefsPage(),
+          DebugKitPanelSharedPrefsPage(),
 
-          DebugPanelLogPage(
+          DebugKitPanelLogPage(
             log: log,
           ),
 
-          DebugPanelHttpPage(
+          DebugKitPanelHttpPage(
             httpLogController: httpLog,
           ),
 
-          DebugPanelCustomPage(
+          DebugKitPanelCustomPage(
             name: 'log',
             title: 'Log',
             icon: Icons.history,
             builder: (context) => const Text('Log'),
           ),
 
-          DebugPanelCustomPage(
+          DebugKitPanelCustomPage(
             name: 'network',
             title: 'Network',
             icon: Icons.network_check,
@@ -362,11 +362,11 @@ class AppDebugPanelState extends State<AppDebugPanel> {
           ),
           */
 
-          DebugPanelPage(
+          DebugKitPanelPage(
             name: 'sectionsTest',
             title: 'Sections Test',
             sections: {
-              DebugPanelPageSection(
+              DebugKitPanelPageSection(
                 collapsed: false,
                 name: 'section1',
                 title: 'Section 1',
@@ -374,12 +374,12 @@ class AppDebugPanelState extends State<AppDebugPanel> {
                     'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed dapibus, ante ultricies adipiscing pulvinar.',
                 builder: (context, controller) => const Text('Section 1'),
               ),
-              DebugPanelPageSection(
+              DebugKitPanelPageSection(
                 name: 'section2',
                 title: 'Section 2',
                 builder: (context, controller) => const Text('Section 2'),
               ),
-              DebugPanelPageSection(
+              DebugKitPanelPageSection(
                 name: 'section3',
                 title: 'Section 3',
                 builder: (context, controller) => Container(color: Colors.blue.shade800, height: 1000),
@@ -387,23 +387,23 @@ class AppDebugPanelState extends State<AppDebugPanel> {
             },
           ),
 
-          DebugPanelCustomPage(
+          DebugKitPanelCustomPage(
             name: 'test',
             title: 'Test Page 1',
             builder: (context) => const Text('Test'),
           ),
 
-          DebugPanelCustomPage(
+          DebugKitPanelCustomPage(
             name: 'test2',
             title: 'Test Page 2',
             builder: (context) => const Text('Test'),
           ),
-          DebugPanelCustomPage(
+          DebugKitPanelCustomPage(
             name: 'test3',
             title: 'Test Page 3',
             builder: (context) => const Text('Test'),
           ),
-          DebugPanelCustomPage(
+          DebugKitPanelCustomPage(
             name: 'test4',
             title: 'Test Page 4',
             builder: (context) => const Text('Test'),
@@ -411,7 +411,7 @@ class AppDebugPanelState extends State<AppDebugPanel> {
 
           //
           // DebugPanelLogPage(logger: ...),
-          ...DebugPanelSettings.defaultPages,
+          ...DebugKitSettings.defaultPages,
         },
         /*
         buildOverlay: (context) {
