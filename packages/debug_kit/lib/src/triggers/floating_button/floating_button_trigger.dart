@@ -2,10 +2,23 @@ import 'dart:async';
 import 'package:debug_kit/src/controller.dart';
 import 'package:debug_kit/src/pref_storage/prefs.dart';
 import 'package:debug_kit/src/triggers/floating_button/floating_button.dart';
+import 'package:debug_kit/src/triggers/trigger.dart';
 import 'package:debug_kit/src/widgets/movable.dart';
 import 'package:flutter/material.dart';
 
 class DebugKitFloatingButtonTrigger extends StatefulWidget {
+  static const name = 'debug_kit_floating_button';
+
+  static DebugKitTrigger setup() {
+    return DebugKitTrigger(
+      name: name,
+      builder: (context, controller, child) => DebugKitFloatingButtonTrigger(
+        controller: controller,
+        child: child,
+      ),
+    );
+  }
+
   static const positionStorageKey = 'debug_kit_floating_button_position';
 
   // TODO: Initial position

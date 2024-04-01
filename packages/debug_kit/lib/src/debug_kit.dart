@@ -1,13 +1,9 @@
 import 'package:debug_kit/src/controller.dart';
 import 'package:debug_kit/src/pref_storage/pref_storage.dart';
 import 'package:debug_kit/src/pref_storage/prefs.dart';
-import 'package:debug_kit/src/triggers/floating_button/floating_button_trigger.dart';
 import 'package:debug_kit/src/screen/screen.dart';
 import 'package:debug_kit/src/screen_route.dart';
 import 'package:debug_kit/src/settings.dart';
-import 'package:debug_kit/src/triggers/glyph/glyph_trigger.dart';
-import 'package:debug_kit/src/triggers/shortcut_trigger.dart';
-import 'package:debug_kit/src/triggers/trigger.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -20,7 +16,6 @@ class DebugKit extends StatefulWidget {
   final DebugKitController? controller;
   final DebugKitBaseSettings settings;
   final Widget? child;
-  final DebugKitTrigger trigger;
   final bool enabled;
 
   const DebugKit({
@@ -29,22 +24,8 @@ class DebugKit extends StatefulWidget {
     this.controller,
     this.settings = const DebugKitSettings(),
     required this.child,
-    this.trigger = _defaultTriggers,
     this.enabled = true,
   });
-
-  static Widget _defaultTriggers(BuildContext context, DebugKitController controller, Widget child) {
-    return DebugKitGlyphTrigger(
-      controller: controller,
-      child: DebugKitShortcutTrigger(
-        controller: controller,
-        child: DebugKitFloatingButtonTrigger(
-          controller: controller,
-          child: child,
-        ),
-      ),
-    );
-  }
 
   @override
   State<DebugKit> createState() => DebugKitState();
@@ -112,12 +93,6 @@ class DebugKitState extends State<DebugKit> {
     _screenVisible = true;
     try {
       await widget.navigatorKey.currentState?.push(
-        // MaterialPageRoute(
-        //   fullscreenDialog: true,
-        //   barrierDismissible: true,
-        //   settings: const RouteSettings(name: _screenRouteName),
-        //   builder: (context) => DebugKitPanelScreen(controller: controller, pages: widget.settings.pages),
-        // ),
         DebugKitPanelScreenRoute(
           settings: const RouteSettings(name: _screenRouteName),
           builder: (context) => DebugKitPanelScreen(controller: controller, pages: widget.settings.pages),
@@ -137,13 +112,23 @@ class DebugKitState extends State<DebugKit> {
     widget.navigatorKey.currentState?.pop();
   }
 
+  Widget _buildTriggers(Widget child) {
+    Widget result = child;
+
+    for (var trigger in widget.settings.triggers) {
+      result = trigger.builder(context, controller, result);
+    }
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     final body = widget.child ?? const SizedBox.shrink();
     final overlay = controller.enabled
         ? DebugKitPrefs(
             storage: _prefs,
-            child: widget.trigger(context, controller, body),
+            child: _buildTriggers(body),
           )
         : body;
 

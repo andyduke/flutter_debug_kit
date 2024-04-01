@@ -1,8 +1,22 @@
 import 'package:debug_kit/src/controller.dart';
 import 'package:debug_kit/src/triggers/glyph/glyph_detector.dart';
+import 'package:debug_kit/src/triggers/trigger.dart';
 import 'package:flutter/material.dart';
 
 class DebugKitGlyphTrigger extends StatelessWidget {
+  static const name = 'debug_kit_glyph';
+
+  static DebugKitTrigger setup({List<DebugKitGlyphPart> glyph = defaultGlyph}) {
+    return DebugKitTrigger(
+      name: name,
+      builder: (context, controller, child) => DebugKitGlyphTrigger(
+        glyph: glyph,
+        controller: controller,
+        child: child,
+      ),
+    );
+  }
+
   static const defaultGlyph = [
     DebugKitGlyphPart.swipeUp,
     DebugKitGlyphPart.swipeDown,
