@@ -1,5 +1,5 @@
 import 'package:debug_kit/debug_kit.dart';
-import 'package:debug_kit_example/app_debug_panel.dart';
+import 'package:debug_kit_example/app_debug_kit.dart';
 import 'package:debug_kit_http/debug_kit_http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,119 +19,45 @@ class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: themeMode,
-        builder: (context, mode, child) {
-          final app = MaterialApp(
-            debugShowCheckedModeBanner: false,
-            navigatorKey: navigatorKey,
-            home: const DemoScreen(),
-            themeMode: mode,
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            builder: (context, child) {
-              return AppDebugPanel(
-                child: Providers(
-                  child: child ?? const SizedBox.shrink(),
-                ),
-              );
-
-              /*
-              return DebugPanel(
-                settings: DebugPanelSettings(
-                  buttonVisible: kDebugMode,
-                  // pages: [
-                  //   DebugPanelAppPage(),
-                  //   ...DebugPanelSettings.defaultPages,
-                  // ],
-                  buildOverlay: (context) {
-                    return TextButton(
-                      onPressed: () {
-                        context.read<AuthState>().logout();
-                      },
-                      child: const Text('Logout'),
-                    );
-                  },
-                ),
-                // builder: (context, child) => Providers(child: child),
-                // child: child,
-                    
-                builder: (context, debugBuilder) => Providers(child: debugBuilder(child)),
-                // builder: (context, debugBuilder) => Providers(child: child ?? const SizedBox.shrink()),
-              );
-              */
-
-              /*
-              return Providers(
-                child: DebugPanelPageBuilder(
-                  id: 'app-page',
-                  title: 'App Page',
-                  builder: (context) => TextButton(
-                    onPressed: () => context.read<AuthState>().logout(),
-                    child: const Text('Custom 1'),
-                  ),
-                  child: child ?? const SizedBox.shrink(),
-                ),
-              );
-              */
-            },
-          );
-
-          return AnnotatedRegion(
-            value: (mode == ThemeMode.light)
-                ? const SystemUiOverlayStyle(
-                    statusBarColor: Color(0xFFFFFFFF),
-                    statusBarIconBrightness: Brightness.dark,
-                    statusBarBrightness: Brightness.light,
-                    systemNavigationBarColor: Color(0xFFFFFFFF),
-                    systemNavigationBarIconBrightness: Brightness.dark,
-                  )
-                : const SystemUiOverlayStyle(
-                    statusBarColor: Color(0xFF000000),
-                    statusBarIconBrightness: Brightness.light,
-                    statusBarBrightness: Brightness.dark,
-                    systemNavigationBarColor: Color(0xFF000000),
-                    systemNavigationBarIconBrightness: Brightness.light,
-                  ),
-            child: app,
-          );
-        });
-
-    /*
-    final app = MaterialApp(
-      home: const DemoScreen(),
-      builder: (context, child) {
-        return Providers(
-          child: DebugPanelPageBuilder(
-            id: 'app-page',
-            title: 'App Page',
-            builder: (context) => TextButton(
-              onPressed: () => context.read<AuthState>().logout(),
-              child: const Text('Custom 1'),
-            ),
-            child: child ?? const SizedBox.shrink(),
-          ),
+  Widget build(BuildContext context) => ValueListenableBuilder(
+      valueListenable: themeMode,
+      builder: (context, mode, child) {
+        final app = MaterialApp(
+          debugShowCheckedModeBanner: false,
+          navigatorKey: navigatorKey,
+          title: 'DebugKit Demo App',
+          home: const DemoScreen(),
+          themeMode: mode,
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          builder: (context, child) {
+            return ExampleAppDebugKit(
+              child: Providers(
+                child: child ?? const SizedBox.shrink(),
+              ),
+            );
+          },
         );
-      },
-    );
 
-    if (kDebugMode) {
-      return DebugPanel(
-        settings: const DebugPanelSettings(
-          buttonVisible: kDebugMode,
-          // pages: [
-          //   DebugPanelAppPage(),
-          //   ...DebugPanelSettings.defaultPages,
-          // ],
-        ),
-        child: app,
-      );
-    } else {
-      return app;
-    }
-    */
-  }
+        return AnnotatedRegion(
+          value: (mode == ThemeMode.light)
+              ? const SystemUiOverlayStyle(
+                  statusBarColor: Color(0xFFFFFFFF),
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.light,
+                  systemNavigationBarColor: Color(0xFFFFFFFF),
+                  systemNavigationBarIconBrightness: Brightness.dark,
+                )
+              : const SystemUiOverlayStyle(
+                  statusBarColor: Color(0xFF000000),
+                  statusBarIconBrightness: Brightness.light,
+                  statusBarBrightness: Brightness.dark,
+                  systemNavigationBarColor: Color(0xFF000000),
+                  systemNavigationBarIconBrightness: Brightness.light,
+                ),
+          child: app,
+        );
+      });
 }
 
 class AuthState with ChangeNotifier {
@@ -185,7 +111,7 @@ class Providers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final log = AppDebugPanel.maybeOf(context)?.httpLog;
+    final log = ExampleAppDebugKit.maybeOf(context)?.httpLog;
     // print('[Providers] log: $log');
 
     return MultiProvider(
@@ -235,7 +161,7 @@ class DemoScreen extends StatelessWidget {
               onPressed: () {
                 DebugKitController.maybeOf(context)?.open();
               },
-              child: const Text('Open DebugPanel'),
+              child: const Text('Open Debug Panel'),
             ),
 
             //
@@ -246,7 +172,7 @@ class DemoScreen extends StatelessWidget {
               onPressed: () {
                 showAboutDialog(
                   context: context,
-                  applicationName: 'DebugPanel Demo App',
+                  applicationName: 'DebugKit Demo App',
                   applicationVersion: '0.1',
                   applicationLegalese: '(C) Andy Chentsov',
                 );
@@ -258,7 +184,7 @@ class DemoScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             //
-            HttpRequestView(),
+            const HttpRequestView(),
           ],
         ),
       ),
@@ -269,32 +195,6 @@ class DemoScreen extends StatelessWidget {
         ],
       ),
     );
-    /*
-    return const DebugPanelCustomize(
-      items: [
-        / *
-        // TODO: !!!
-        DebugPanelPageInfo(
-          before: 'general',
-          replace: true,
-          page: DebugPanelPage(
-            id: 'custom1',
-            title: 'Custom 1',
-            builder: (context) => TextButton(
-              onPressed: () => context.read<AuthState>().logout(),
-              child: Text('Custom 1'),
-            ),
-          ),
-        ),
-        * /
-      ],
-      child: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-    */
   }
 }
 
