@@ -108,7 +108,7 @@ class ExampleAppDebugKitState extends State<ExampleAppDebugKit> {
                         itemHeight: 60,
 
                         //
-                        value: 2,
+                        value: context.watch<ApiServer>().selectedIndex,
                         items: [
                           const DropdownMenuItem(
                             value: 1,
@@ -180,7 +180,11 @@ class ExampleAppDebugKitState extends State<ExampleAppDebugKit> {
                             }),
                           ),
                         ],
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          // TODO: Set server
+                          context.read<ApiServer>().selectedIndex = value ?? 0;
+                          context.read<AuthState>().logout();
+                        },
                       ),
                       /*
                       DropdownButtonHideUnderline(

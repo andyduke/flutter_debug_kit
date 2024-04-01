@@ -60,6 +60,17 @@ class MainApp extends StatelessWidget {
       });
 }
 
+class ApiServer with ChangeNotifier {
+  int get selectedIndex => _selectedIndex;
+  int _selectedIndex = 1;
+  set selectedIndex(int newValue) {
+    if (newValue != _selectedIndex) {
+      _selectedIndex = newValue;
+      notifyListeners();
+    }
+  }
+}
+
 class AuthState with ChangeNotifier {
   bool get isLogged => _isLogged;
   bool _isLogged = true;
@@ -116,6 +127,9 @@ class Providers extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ApiServer>(
+          create: (_) => ApiServer(),
+        ),
         ChangeNotifierProvider<AuthState>(
           create: (_) => AuthState(),
         ),
@@ -142,6 +156,14 @@ class DemoScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
+            Consumer<ApiServer>(
+              builder: (context, value, child) {
+                return Text('API Server: ${value.selectedIndex}');
+              },
+            ),
+
+            //
+            const SizedBox(height: 24),
             Consumer<AuthState>(
               builder: (context, value, child) {
                 return Text('Is logged: ${value.isLogged}');
