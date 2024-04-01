@@ -298,8 +298,6 @@ class ExampleAppDebugKitState extends State<ExampleAppDebugKit> {
                       builder: (context, setState) {
                         return Row(
                           children: [
-                            const Text('Not visible'),
-                            const SizedBox(width: 8),
                             Switch.adaptive(
                               value: controller.buttonVisible,
                               onChanged: (newValue) => setState(() {

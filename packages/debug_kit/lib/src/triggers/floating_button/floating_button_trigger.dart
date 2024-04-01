@@ -39,6 +39,7 @@ class DebugKitFloatingButtonTrigger extends StatefulWidget {
 
 class _DebugKitFloatingButtonTriggerState extends State<DebugKitFloatingButtonTrigger> {
   final ready = Completer();
+  bool loading = false;
   Offset? position;
 
   @override
@@ -73,15 +74,21 @@ class _DebugKitFloatingButtonTriggerState extends State<DebugKitFloatingButtonTr
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (!ready.isCompleted) {
-      _loadPosition();
+    if (!loading && !ready.isCompleted) {
+      _loadSettings();
     }
   }
 
-  Future<void> _loadPosition() async {
+  Future<void> _loadSettings() async {
+    loading = true;
+
     final prefStorage = DebugKitPrefs.maybeOf(context);
     position = await prefStorage?.get<Offset>(DebugKitFloatingButtonTrigger.positionStorageKey);
+
+    // TODO: Load button visibility from Shared prefs
+
     ready.complete();
+    loading = false;
   }
 
   @override
