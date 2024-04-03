@@ -26,7 +26,7 @@ class DebugKitPanelAppBar extends StatelessWidget {
       // Title
       title: const Padding(
         padding: EdgeInsets.only(top: 9),
-        child: Text('Debug Panel'),
+        child: Text('DebugKit Panel'),
       ),
       actions: [
         if (onClose != null)
