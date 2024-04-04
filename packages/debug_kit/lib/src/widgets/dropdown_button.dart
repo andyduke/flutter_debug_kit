@@ -7,6 +7,7 @@ class DebugKitPanelDropdownButton<T> extends StatelessWidget {
   final bool isExpanded;
   final DropdownButtonBuilder? selectedItemBuilder;
   final double? itemHeight;
+  final TextStyle? textStyle;
 
   const DebugKitPanelDropdownButton({
     super.key,
@@ -16,6 +17,7 @@ class DebugKitPanelDropdownButton<T> extends StatelessWidget {
     this.isExpanded = true,
     this.selectedItemBuilder,
     this.itemHeight = kMinInteractiveDimension,
+    this.textStyle,
   });
 
   @override
@@ -42,11 +44,12 @@ class DebugKitPanelDropdownButton<T> extends StatelessWidget {
             icon: const Icon(Icons.expand_more),
             focusColor: theme.colorScheme.primary,
             dropdownColor: theme.colorScheme.surfaceVariant,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+            style: textStyle ??
+                TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
             selectedItemBuilder: selectedItemBuilder,
 
             //
