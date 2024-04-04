@@ -4,6 +4,7 @@ import 'package:debug_kit_http/debug_kit_http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http_middleware/http_middleware.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -122,8 +123,9 @@ class Providers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final log = ExampleAppDebugKit.maybeOf(context)?.httpLog;
-    // print('[Providers] log: $log');
+    // final log = ExampleAppDebugKit.maybeOf(context)?.httpLog;
+    final log = context.read<DebugKitHttpLogController?>();
+    debugPrint('[Providers] log: $log');
 
     return MultiProvider(
       providers: [
@@ -207,6 +209,17 @@ class DemoScreen extends StatelessWidget {
 
             //
             const HttpRequestView(),
+
+            //
+            const SizedBox(height: 24),
+
+            //
+            FilledButton(
+              onPressed: () {
+                context.read<Logger?>()?.info('Logger info entry');
+              },
+              child: const Text('Log entry'),
+            ),
           ],
         ),
       ),
