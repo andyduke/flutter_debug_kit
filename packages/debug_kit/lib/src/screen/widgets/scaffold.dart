@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:debug_kit/src/controller.dart';
 import 'package:debug_kit/src/pages/base_page.dart';
 import 'package:debug_kit/src/screen/widgets/app_bar.dart';
@@ -7,11 +8,13 @@ import 'package:flutter/material.dart';
 
 class DebugKitPanelScaffold extends StatefulWidget {
   final DebugKitController controller;
+  final String? initialPageName;
   final Set<DebugKitPanelBasePage> pages;
 
   const DebugKitPanelScaffold({
     super.key,
     required this.controller,
+    this.initialPageName,
     required this.pages,
   });
 
@@ -23,6 +26,7 @@ class _DebugKitPanelScaffoldState extends State<DebugKitPanelScaffold> {
   final scrollController = ScrollController();
 
   late final tabController = CustomTabController(
+    initialIndex: initialPageIndex,
     length: widget.pages.length,
   )..addListener(_resetScrollPosition);
 
@@ -33,6 +37,11 @@ class _DebugKitPanelScaffoldState extends State<DebugKitPanelScaffold> {
 
     super.dispose();
   }
+
+  int get initialPageIndex => (widget.initialPageName == null)
+      ? 0
+      : widget.pages
+          .foldIndexed(0, (index, previous, page) => (page.name == widget.initialPageName) ? index : previous);
 
   void _resetScrollPosition() {
     if (scrollController.offset > DebugKitPanelAppBar.kToolbarHeight) {

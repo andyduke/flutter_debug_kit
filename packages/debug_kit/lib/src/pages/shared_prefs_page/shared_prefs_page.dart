@@ -13,8 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DebugKitPanelSharedPrefsPage extends DebugKitPanelBasePage {
+  static const String defaultName = 'shared_prefs';
+
   @override
-  final String name = 'shared_prefs';
+  final String name = defaultName;
 
   @override
   final String title = 'Shared Prefs';

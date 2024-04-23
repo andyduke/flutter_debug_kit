@@ -17,8 +17,10 @@ import 'package:debug_kit/src/widgets/toolbar.dart';
 import 'package:flutter/material.dart';
 
 class DebugKitPanelLogPage extends DebugKitPanelBasePage {
+  static const String defaultName = 'log';
+
   @override
-  final String name = 'log';
+  final String name = defaultName;
 
   @override
   final String title = 'Log';

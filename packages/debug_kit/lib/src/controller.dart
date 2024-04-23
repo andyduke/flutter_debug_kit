@@ -17,10 +17,11 @@ class DebugKitController with ChangeNotifier {
     }
   }
 
-  // TODO: Add "DebugKitPanelBasePage? selectedPage" getter/setter
+  @internal
+  String? initialPageName;
 
-  // TODO: Add optional "page" parameter (switch to specified page after open)
-  void open() {
+  void open({String? page}) {
+    initialPageName = page;
     opened = true;
   }
 

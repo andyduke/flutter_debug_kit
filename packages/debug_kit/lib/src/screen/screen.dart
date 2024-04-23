@@ -8,11 +8,13 @@ import 'package:flutter/services.dart';
 
 class DebugKitPanelScreen extends StatelessWidget {
   final DebugKitController controller;
+  final String? initialPageName;
   final Set<DebugKitPanelBasePage> pages;
 
   const DebugKitPanelScreen({
     super.key,
     required this.controller,
+    this.initialPageName,
     required this.pages,
   });
 
@@ -23,6 +25,7 @@ class DebugKitPanelScreen extends StatelessWidget {
       child: DebugKitTheme(
         child: DebugKitPanelScaffold(
           controller: controller,
+          initialPageName: initialPageName,
           pages: pages,
         ),
       ),

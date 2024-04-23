@@ -36,7 +36,7 @@ class DebugKitState extends State<DebugKit> {
   static const _screenRouteName = '/debug_kit_panel_screen';
 
   DebugKitController get controller =>
-      _controller ??= widget.controller ?? DebugKitController(buttonVisible: widget.settings.buttonVisible);
+      _controller ??= (widget.controller ?? DebugKitController(buttonVisible: widget.settings.buttonVisible));
   DebugKitController? _controller;
 
   final _prefs = DebugKitPrefStorage();
@@ -95,9 +95,15 @@ class DebugKitState extends State<DebugKit> {
       await widget.navigatorKey.currentState?.push(
         DebugKitPanelScreenRoute(
           settings: const RouteSettings(name: _screenRouteName),
-          builder: (context) => DebugKitPanelScreen(controller: controller, pages: widget.settings.pages),
+          builder: (context) => DebugKitPanelScreen(
+            controller: controller,
+            initialPageName: controller.initialPageName,
+            pages: widget.settings.pages,
+          ),
         ),
       );
+
+      controller.initialPageName = null;
     } finally {
       _screenVisible = false;
     }

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugKitPanelGeneralPage extends DebugKitPanelPage {
+  static const String defaultName = 'general';
+
   DebugKitPanelGeneralPage({
     super.sections = const {},
   }) : super(
-          name: 'general',
+          name: defaultName,
           title: 'General',
           icon: Icons.info_outline,
         );

@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 part '_http_log_viewer.dart';
 
 class DebugKitPanelHttpPage extends DebugKitPanelBasePage {
+  static const String defaultName = 'http';
+
   @override
-  final String name = 'http';
+  final String name = defaultName;
 
   @override
   late final String title = _customTitle ?? 'Network';

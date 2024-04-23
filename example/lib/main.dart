@@ -194,6 +194,17 @@ class DemoScreen extends StatelessWidget {
             //
             ElevatedButton(
               onPressed: () {
+                DebugKitController.maybeOf(context)?.open(page: DebugKitPanelSharedPrefsPage.defaultName);
+              },
+              child: const Text('Open SharedPrefs Panel'),
+            ),
+
+            //
+            const SizedBox(height: 24),
+
+            //
+            ElevatedButton(
+              onPressed: () {
                 showAboutDialog(
                   context: context,
                   applicationName: 'DebugKit Demo App',
