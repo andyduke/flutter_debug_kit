@@ -6,6 +6,7 @@ import 'package:debug_kit/src/pages/log_page/models/log_controller.dart';
 import 'package:debug_kit/src/pages/log_page/models/log_history.dart';
 import 'package:debug_kit/src/pages/log_page/models/log_record.dart';
 import 'package:debug_kit/src/utils/string_ext.dart';
+import 'package:debug_kit/src/widgets/empty_list_view.dart';
 import 'package:debug_kit/src/widgets/filter_bar.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/filtered_list_view.dart';
@@ -165,32 +166,34 @@ class _LogViewerState extends State<_LogViewer> {
 
             return Stack(
               children: [
-                KeyboardDismisser(
-                  child: ListView.builder(
-                    // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                    padding: const EdgeInsets.only(
-                        bottom: FloatingBottomBar.kFloatingBarHeight + FloatingBottomBar.kFloatingBarOffset + 8),
-                    itemCount: filteredLog.length + ((!isDesktop && filterBar) ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if ((!isDesktop && filterBar) && index == 0) {
-                        return _LogPageFilterBar(controller: controller);
-                      }
+                filteredLog.isEmpty
+                    ? const EmptyListView(keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag)
+                    : KeyboardDismisser(
+                        child: ListView.builder(
+                          // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: const EdgeInsets.only(
+                              bottom: FloatingBottomBar.kFloatingBarHeight + FloatingBottomBar.kFloatingBarOffset + 8),
+                          itemCount: filteredLog.length + ((!isDesktop && filterBar) ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if ((!isDesktop && filterBar) && index == 0) {
+                              return _LogPageFilterBar(controller: controller);
+                            }
 
-                      final record = filteredLog.elementAt(index - ((!isDesktop && filterBar) ? 1 : 0));
+                            final record = filteredLog.elementAt(index - ((!isDesktop && filterBar) ? 1 : 0));
 
-                      // TODO: LogRecordTile
-                      return ListTile(
-                        onLongPress: () {
-                          setState(() {
-                            selectionMode = !selectionMode;
-                          });
-                        },
-                        title: Text('${record.tag} | ${record.message}'),
-                        subtitle: Text('${record.time}'),
-                      );
-                    },
-                  ),
-                ),
+                            // TODO: LogRecordTile
+                            return ListTile(
+                              onLongPress: () {
+                                setState(() {
+                                  selectionMode = !selectionMode;
+                                });
+                              },
+                              title: Text('${record.tag} | ${record.message}'),
+                              subtitle: Text('${record.time}'),
+                            );
+                          },
+                        ),
+                      ),
 
                 // Floating bottom bar
                 Positioned(

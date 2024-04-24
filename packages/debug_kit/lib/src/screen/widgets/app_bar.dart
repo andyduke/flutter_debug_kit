@@ -6,18 +6,22 @@ import 'package:flutter/material.dart';
 class DebugKitPanelAppBar extends StatelessWidget {
   static const kToolbarHeight = 44.0;
 
+  final bool floating;
   // final TabController tabController;
   final CustomTabController tabController;
   final ScrollController scrollController;
   final Set<DebugKitPanelBasePage> pages;
   final VoidCallback? onClose;
+  final VoidCallback? onTop;
 
   const DebugKitPanelAppBar({
     super.key,
+    this.floating = true,
     required this.tabController,
     required this.scrollController,
     required this.pages,
     this.onClose,
+    this.onTop,
   });
 
   @override
@@ -42,7 +46,7 @@ class DebugKitPanelAppBar extends StatelessWidget {
       toolbarHeight: kToolbarHeight,
 
       // Settings
-      floating: true,
+      floating: floating,
       pinned: true,
       snap: false,
       scrolledUnderElevation: 0,
@@ -53,11 +57,7 @@ class DebugKitPanelAppBar extends StatelessWidget {
         controller: tabController,
         pages: pages,
         onTopTap: () {
-          scrollController.animateTo(
-            0,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-          );
+          onTop?.call();
         },
       ),
     );

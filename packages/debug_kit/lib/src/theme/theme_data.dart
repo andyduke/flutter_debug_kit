@@ -128,9 +128,11 @@ abstract class DebugKitThemeData {
 
       // Scrollbar theme
       scrollbarTheme: ScrollbarThemeData(
-        thumbVisibility: (kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux)
-            ? MaterialStateProperty.all(true)
-            : null,
+        thumbColor: MaterialStateColor.resolveWith((states) => switch (states) {
+              Set() when states.contains(MaterialState.dragged) => darkScheme.onSurface.withOpacity(0.75),
+              Set() when states.contains(MaterialState.hovered) => darkScheme.onSurface.withOpacity(0.65),
+              _ => darkScheme.onSurface.withOpacity(0.3),
+            }),
       ),
 
       // Extensions

@@ -18,22 +18,25 @@ class AppBarTabs extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTabBar(
-      controller: controller,
-      isScrollable: true,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      tabs: [
-        for (var page in pages)
-          AppBarTab(
-            icon: page.icon,
-            text: page.title,
-          ),
-      ],
-      onTap: (int index, int prevIndex) {
-        if (prevIndex == index) {
-          onTopTap?.call();
-        }
-      },
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(overscroll: false, scrollbars: false),
+      child: CustomTabBar(
+        controller: controller,
+        isScrollable: true,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        tabs: [
+          for (var page in pages)
+            AppBarTab(
+              icon: page.icon,
+              text: page.title,
+            ),
+        ],
+        onTap: (int index, int prevIndex) {
+          if (prevIndex == index) {
+            onTopTap?.call();
+          }
+        },
+      ),
     );
   }
 

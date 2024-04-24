@@ -153,85 +153,88 @@ class DemoScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Demo'),
       ),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Consumer<ApiServer>(
-              builder: (context, value, child) {
-                return Text('API Server: ${value.selectedIndex}');
-              },
-            ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Consumer<ApiServer>(
+                builder: (context, value, child) {
+                  return Text('API Server: ${value.selectedIndex}');
+                },
+              ),
 
-            //
-            const SizedBox(height: 24),
-            Consumer<AuthState>(
-              builder: (context, value, child) {
-                return Text('Is logged: ${value.isLogged}');
-              },
-            ),
+              //
+              const SizedBox(height: 24),
+              Consumer<AuthState>(
+                builder: (context, value, child) {
+                  return Text('Is logged: ${value.isLogged}');
+                },
+              ),
 
-            //
-            const SizedBox(height: 24),
+              //
+              const SizedBox(height: 24),
 
-            const ThemeModeSwitch(),
+              const ThemeModeSwitch(),
 
-            //
-            const SizedBox(height: 24),
+              //
+              const SizedBox(height: 24),
 
-            //
-            ElevatedButton(
-              onPressed: () {
-                DebugKitController.maybeOf(context)?.open();
-              },
-              child: const Text('Open Debug Panel'),
-            ),
+              //
+              ElevatedButton(
+                onPressed: () {
+                  DebugKitController.maybeOf(context)?.open();
+                },
+                child: const Text('Open Debug Panel'),
+              ),
 
-            //
-            const SizedBox(height: 24),
+              //
+              const SizedBox(height: 24),
 
-            //
-            ElevatedButton(
-              onPressed: () {
-                DebugKitController.maybeOf(context)?.open(page: DebugKitPanelSharedPrefsPage.defaultName);
-              },
-              child: const Text('Open SharedPrefs Panel'),
-            ),
+              //
+              ElevatedButton(
+                onPressed: () {
+                  DebugKitController.maybeOf(context)?.open(page: DebugKitPanelSharedPrefsPage.defaultName);
+                },
+                child: const Text('Open SharedPrefs Panel'),
+              ),
 
-            //
-            const SizedBox(height: 24),
+              //
+              const SizedBox(height: 24),
 
-            //
-            ElevatedButton(
-              onPressed: () {
-                showAboutDialog(
-                  context: context,
-                  applicationName: 'DebugKit Demo App',
-                  applicationVersion: '0.1',
-                  applicationLegalese: '(C) Andy Chentsov',
-                );
-              },
-              child: const Text('Show Dialog'),
-            ),
+              //
+              ElevatedButton(
+                onPressed: () {
+                  showAboutDialog(
+                    context: context,
+                    applicationName: 'DebugKit Demo App',
+                    applicationVersion: '0.1',
+                    applicationLegalese: '(C) Andy Chentsov',
+                  );
+                },
+                child: const Text('Show Dialog'),
+              ),
 
-            //
-            const SizedBox(height: 24),
+              //
+              const SizedBox(height: 24),
 
-            //
-            const HttpRequestView(),
+              //
+              const HttpRequestView(),
 
-            //
-            const SizedBox(height: 24),
+              //
+              const SizedBox(height: 24),
 
-            //
-            FilledButton(
-              onPressed: () {
-                context.read<Logger?>()?.info('Logger info entry');
-              },
-              child: const Text('Log entry'),
-            ),
-          ],
+              //
+              FilledButton(
+                onPressed: () {
+                  context.read<Logger?>()?.info('Logger info entry');
+                },
+                child: const Text('Log entry'),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

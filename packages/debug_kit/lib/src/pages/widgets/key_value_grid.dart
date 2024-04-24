@@ -1,3 +1,4 @@
+import 'package:debug_kit/src/widgets/empty_list_view.dart';
 import 'package:flutter/material.dart';
 
 class KeyValueGrid extends StatelessWidget {
@@ -17,6 +18,10 @@ class KeyValueGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (entries.isEmpty) {
+      return EmptyListView(keyboardDismissBehavior: keyboardDismissBehavior);
+    }
 
     return ListView.separated(
       keyboardDismissBehavior: keyboardDismissBehavior,
