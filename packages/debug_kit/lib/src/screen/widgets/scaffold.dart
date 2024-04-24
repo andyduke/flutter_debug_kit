@@ -116,18 +116,6 @@ class _DebugKitPanelScaffoldState extends State<DebugKitPanelScaffold> {
           key: nestedScrollKey,
           controller: scrollController,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
-            /*
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: DebugKitPanelAppBar(
-                floating: !isDesktop,
-                pages: widget.pages,
-                tabController: tabController,
-                scrollController: scrollController,
-                onClose: () => widget.controller.close(),
-              ),
-            ),
-            */
             DebugKitPanelAppBar(
               floating: !isDesktop,
               pages: widget.pages,
@@ -159,103 +147,8 @@ class _DebugKitPanelScaffoldState extends State<DebugKitPanelScaffold> {
               );
             },
           ),
-          /*
-          body: CustomTabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: tabController,
-            children: [
-              for (var page in widget.pages)
-                _DesktopPrimaryScrollController(
-                  controller: scrollController,
-                  child: Container(
-                    width: double.infinity,
-                    alignment: Alignment.topLeft,
-                    child: page.build(context, widget.controller),
-                  ),
-                ),
-            ],
-          ),
-          */
         ),
       ),
     );
   }
 }
-
-/*
-class _DesktopPrimaryScrollController extends StatelessWidget {
-  final ScrollController controller;
-  final Widget child;
-
-  const _DesktopPrimaryScrollController({
-    required this.controller,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    /*
-    return CustomScrollView(
-      // primary: false,
-      // controller: controller,
-      slivers: [
-        SliverOverlapInjector(
-          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-        ),
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: PrimaryScrollController(
-            controller: controller,
-            child: child,
-          ),
-        ),
-      ],
-    );
-    */
-
-    // return child;
-
-    /*
-    return PrimaryScrollController(
-      automaticallyInheritForPlatforms: const {
-        TargetPlatform.windows,
-        TargetPlatform.macOS,
-        TargetPlatform.linux,
-        TargetPlatform.android,
-        TargetPlatform.iOS,
-        TargetPlatform.fuchsia,
-      },
-      controller: controller,
-      child: child,
-    );
-    */
-
-    return PrimaryScrollController.none(child: child);
-
-    /*
-    final platform = ScrollConfiguration.of(context).getPlatform(context);
-    final isDesktop = kIsWeb ||
-        (platform == TargetPlatform.windows) ||
-        (platform == TargetPlatform.macOS) ||
-        (platform == TargetPlatform.linux);
-
-    return isDesktop
-        ? PrimaryScrollController(
-            controller: controller,
-            automaticallyInheritForPlatforms: const {
-              /*
-              TargetPlatform.windows,
-              TargetPlatform.macOS,
-              TargetPlatform.linux,
-              TargetPlatform.android,
-              TargetPlatform.iOS,
-              TargetPlatform.fuchsia,
-              */
-            },
-            child: child,
-          )
-        : child;
-    */
-  }
-}
-*/

@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:debug_kit/src/theme/extensions/app_bar_tabs_theme.dart';
 import 'package:debug_kit/src/theme/utils/color_set.dart';
 import 'package:debug_kit/src/widgets/custom_tabs/custom_tabbar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DebugKitPalette {
@@ -200,11 +198,8 @@ abstract class DebugKitThemeData {
       ),
 
       // Scrollbar theme
-      scrollbarTheme: ScrollbarThemeData(
-        thumbVisibility: (kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux)
-            ? MaterialStateProperty.all(true)
-            : null,
-      ),
+      // scrollbarTheme: ScrollbarThemeData(
+      // ),
 
       // Text field theme
       inputDecorationTheme: InputDecorationTheme(
