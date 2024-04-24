@@ -141,8 +141,7 @@ class _DebugKitPanelScaffoldState extends State<DebugKitPanelScaffold> {
             listenable: tabController,
             builder: (context, child) {
               return Scrollbar(
-                // Scroll bars are visible on all platforms to avoid crashes with multiple subscribers.
-                thumbVisibility: /*true*/ isDesktop,
+                thumbVisibility: isDesktop,
                 interactive: isDesktop,
                 controller: innerScrollController,
                 child: PageTransitionSwitcher(

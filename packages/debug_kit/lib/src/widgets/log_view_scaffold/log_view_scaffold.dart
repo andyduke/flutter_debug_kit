@@ -6,6 +6,7 @@ import 'package:debug_kit/src/widgets/filtered_list_view/models/filter_data.dart
 import 'package:debug_kit/src/widgets/keyboard_dismisser.dart';
 import 'package:debug_kit/src/widgets/search_field.dart';
 import 'package:debug_kit/src/widgets/toolbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 typedef LogViewScaffoldFilterCallback<F, E> = Iterable<E> Function(Iterable<E> entries, String? search, F? filter);
@@ -56,7 +57,7 @@ class _LogViewScaffoldState<F, E> extends State<LogViewScaffold<F, E>> {
   final listController = FilteredListController<_LogViewScaffoldFilterData<F>>();
   bool filterBar = false;
 
-  final bool isDesktop = Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+  final bool isDesktop = kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
   @override
   Widget build(BuildContext context) {

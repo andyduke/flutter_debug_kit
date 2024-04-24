@@ -15,6 +15,7 @@ import 'package:debug_kit/src/widgets/floating_bottom_bar.dart';
 import 'package:debug_kit/src/widgets/keyboard_dismisser.dart';
 import 'package:debug_kit/src/widgets/search_field.dart';
 import 'package:debug_kit/src/widgets/toolbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DebugKitPanelLogPage extends DebugKitPanelBasePage {
@@ -69,7 +70,7 @@ class _LogViewerState extends State<_LogViewer> {
   bool selectionMode = false;
   bool filterBar = false;
 
-  final bool isDesktop = Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+  final bool isDesktop = kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
   Future<void> _clear() async {
     final theme = Theme.of(context);
