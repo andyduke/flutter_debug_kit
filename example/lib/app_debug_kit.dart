@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:collection/collection.dart';
 
 class ExampleAppDebugKit extends StatefulWidget {
   final Widget? child;
@@ -70,7 +71,7 @@ class ExampleAppDebugKitState extends State<ExampleAppDebugKit> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
 
     return MultiProvider(
       providers: [
@@ -91,6 +92,13 @@ class ExampleAppDebugKitState extends State<ExampleAppDebugKit> {
           // buttonVisible: kDebugMode,
           buttonVisible: true,
           pages: {
+            DebugKitPanelCustomPage(
+              name: 'listTest',
+              title: 'List test',
+              builder: (context) => const ListTest1(),
+            ),
+
+            //
             DebugKitPanelGeneralPage(
               sections: {
                 DebugKitPanelPageSection(
@@ -475,4 +483,328 @@ class _AppDebugPanelScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant _AppDebugPanelScope oldWidget) => false;
+}
+
+// ---
+
+class ListTest1 extends StatefulWidget {
+  const ListTest1({super.key});
+
+  @override
+  State<ListTest1> createState() => _ListTest1State();
+}
+
+class _ListTest1State extends State<ListTest1> {
+  final List<
+      ({
+        bool finished,
+        bool success,
+        String status,
+        String elapsedTime,
+        String timestamp,
+        String method,
+        String url
+      })> entries = [
+    (
+      finished: false,
+      success: true,
+      status: '200 OK',
+      elapsedTime: '1.57 s',
+      timestamp: '14:53:18.543',
+      method: 'GET',
+      url: 'https://official-joke-api.appspot.com/random_joke?id=7',
+    ),
+    (
+      finished: true,
+      success: false,
+      status: '500 Fail',
+      elapsedTime: '274 ms',
+      timestamp: '14:53:18.531',
+      method: 'GET',
+      url: 'https://official-joke-api.appspot.com/random_joke?id=7',
+    ),
+    (
+      finished: true,
+      success: true,
+      status: '200 OK',
+      elapsedTime: '481 ms',
+      timestamp: '14:53:18.511',
+      method: 'GET',
+      url: 'https://httpbin.org/get',
+    ),
+    (
+      finished: true,
+      success: true,
+      status: '200 OK',
+      elapsedTime: '481 ms',
+      timestamp: '14:53:18.498',
+      method: 'HEAD',
+      url: 'https://httpbin.org/get',
+    ),
+    (
+      finished: true,
+      success: false,
+      status: '481 Fail',
+      elapsedTime: '481 ms',
+      timestamp: '14:53:18.437',
+      method: 'DELETE',
+      url: 'https://httpbin.org/get',
+    ),
+    (
+      finished: true,
+      success: true,
+      status: '200 OK',
+      elapsedTime: '481 ms',
+      timestamp: '14:53:18.368',
+      method: 'POST',
+      url: 'https://httpbin.org/get',
+    ),
+    (
+      finished: true,
+      success: true,
+      status: '200 OK',
+      elapsedTime: '481 ms',
+      timestamp: '14:53:18.347',
+      method: 'POST',
+      url: 'https://httpbin.org/get',
+    ),
+    (
+      finished: true,
+      success: true,
+      status: '200 OK',
+      elapsedTime: '481 ms',
+      timestamp: '14:53:18.304',
+      method: 'POST',
+      url: 'https://httpbin.org/get',
+    ),
+  ];
+
+  bool filterVisible = false;
+  int filterSelected = 0;
+  List<String> filters = [
+    'All',
+    'Success',
+    'Error',
+  ];
+
+  void _applyFilter(int index) {
+    setState(() {
+      filterSelected = index;
+    });
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Search bar
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: TextField(
+                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                  decoration: InputDecoration(
+                    hintText: MaterialLocalizations.of(context).searchFieldLabel,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    filled: true,
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.clear, size: 24),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              //
+              const SizedBox(width: 10),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    filterVisible = !filterVisible;
+                  });
+                },
+                icon: const Icon(Icons.filter_alt),
+                tooltip: 'Toggle filters',
+                style: TextButton.styleFrom(
+                  foregroundColor: filterVisible ? theme.colorScheme.primary : null,
+                ),
+              ),
+
+              //
+              const SizedBox(width: 4),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.delete_sweep),
+                tooltip: 'Remove all',
+                style: TextButton.styleFrom(
+                  foregroundColor: theme.colorScheme.error,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Filter bar
+        if (filterVisible)
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 6),
+            child: ChipTheme(
+              data: ChipThemeData(
+                shape: const StadiumBorder(),
+                showCheckmark: false,
+                labelStyle: TextStyle(
+                  color: MaterialStateColor.resolveWith((states) => switch (states) {
+                        Set() when states.contains(MaterialState.selected) => theme.colorScheme.onSecondaryContainer,
+                        _ => theme.colorScheme.primary,
+                      }),
+                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.w500,
+                ),
+                side: BorderSide(color: theme.colorScheme.primary),
+                backgroundColor: theme.scaffoldBackgroundColor,
+                selectedColor: theme.colorScheme.secondaryContainer,
+              ),
+              child: SizedBox(
+                height: 42,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  children: [
+                    FilterChip(
+                        label: Text(filters.first), selected: filterSelected == 0, onSelected: (_) => _applyFilter(0)),
+                    const SizedBox(width: 10),
+                    VerticalDivider(color: theme.dividerColor, indent: 5, endIndent: 5),
+                    const SizedBox(width: 10),
+                    ...filters.skip(1).mapIndexed(
+                          (i, f) => Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: FilterChip(
+                                label: Text(f),
+                                selected: filterSelected == (i + 1),
+                                onSelected: (_) => _applyFilter(i + 1)),
+                          ),
+                        ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+        // List title
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(top: 16, bottom: 4),
+          child: Text(
+            'Requests  •  ${entries.length}'.toUpperCase(),
+            style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      itemCount: entries.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return _buildHeader(context);
+        }
+
+        final entry = entries[index - 1];
+
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Material(
+            child: Ink(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceVariant,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Meta info
+                      DefaultTextStyle(
+                        style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurfaceVariant),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Status icon
+                            !entry.finished
+                                ? const SizedBox.square(dimension: 12, child: CircularProgressIndicator(strokeWidth: 2))
+                                : Badge(
+                                    backgroundColor: entry.success ? Colors.teal.shade300 : Colors.pink, smallSize: 10),
+                            const SizedBox(width: 10),
+
+                            // Status code
+                            if (entry.finished) Text('${entry.status}  •  '),
+
+                            // HTTP Method
+                            Text(entry.method),
+
+                            // Time
+                            const Spacer(),
+                            if (entry.finished) Text('${entry.elapsedTime} • ${entry.timestamp}'),
+                          ],
+                        ),
+                      ),
+
+                      //
+                      const SizedBox(height: 6),
+                      DefaultTextStyle(
+                        style: const TextStyle(fontSize: 17),
+                        child: Text.rich(TextSpan(
+                          children: [
+                            /*
+                            TextSpan(
+                              // text: entry.method.padRight(8),
+                              text: '${entry.method} ',
+                              style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+                            ),
+                            */
+                            TextSpan(text: entry.url),
+                          ],
+                        )),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      /*
+      itemBuilder: (context, index) => ListTile(
+        title: Text('Item ${index + 1}'),
+        subtitle: const Text('subtitle'),
+      ),
+      */
+    );
+  }
 }

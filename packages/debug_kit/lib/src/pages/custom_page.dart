@@ -23,18 +23,25 @@ class DebugKitPanelCustomPage extends DebugKitPanelBasePage {
 
   @override
   Widget build(BuildContext context, DebugKitController controller) {
+    /*
     final theme = Theme.of(context);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Title
         Padding(
-          padding: const EdgeInsets.only(bottom: 16),
+          padding: DebugKitPanelBasePage.defaultPadding,
           child: Text(title, style: theme.textTheme.titleMedium),
         ),
 
-        builder(context),
+        Expanded(
+          child: builder(context),
+        ),
       ],
     );
+    */
+
+    return builder(context);
   }
 }
