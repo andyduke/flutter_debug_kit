@@ -24,6 +24,7 @@ class MainApp extends StatelessWidget {
       valueListenable: themeMode,
       builder: (context, mode, child) {
         final app = MaterialApp(
+          // showPerformanceOverlay: true,
           debugShowCheckedModeBanner: false,
           navigatorKey: navigatorKey,
           title: 'DebugKit Demo App',

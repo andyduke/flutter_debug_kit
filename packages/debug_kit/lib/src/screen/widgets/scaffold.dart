@@ -32,6 +32,13 @@ class _DebugKitPanelScaffoldState extends State<DebugKitPanelScaffold> {
 
   ScrollController get innerScrollController => nestedScrollKey.currentState?.innerController ?? scrollController;
 
+  List<Widget>? _pages;
+
+  Widget _page(int index) {
+    _pages ??= widget.pages.map((p) => p.build(context, widget.controller)).toList();
+    return _pages![index];
+  }
+
   late final tabController = CustomTabController(
     initialIndex: initialPageIndex,
     length: widget.pages.length,
@@ -41,6 +48,8 @@ class _DebugKitPanelScaffoldState extends State<DebugKitPanelScaffold> {
   void dispose() {
     tabController.dispose();
     scrollController.dispose();
+    _pages?.clear();
+    _pages = null;
 
     super.dispose();
   }
@@ -140,7 +149,7 @@ class _DebugKitPanelScaffoldState extends State<DebugKitPanelScaffold> {
                     key: ValueKey(tabController.index),
                     child: Align(
                       alignment: Alignment.topLeft,
-                      child: widget.pages.elementAt(tabController.index).build(context, widget.controller),
+                      child: _page(tabController.index),
                     ),
                   ),
                 ),
