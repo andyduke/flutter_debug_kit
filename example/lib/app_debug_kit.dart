@@ -661,11 +661,33 @@ class _ListTest1State extends State<ListTest1> {
         // Filter bar
         if (filterVisible)
           Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 6),
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: ChipTheme(
               data: ChipThemeData(
                 shape: const StadiumBorder(),
                 showCheckmark: false,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+
+                //
+                labelStyle: TextStyle(
+                  color: MaterialStateColor.resolveWith((states) => switch (states) {
+                        Set() when states.contains(MaterialState.selected) => theme.colorScheme.onSecondaryContainer,
+                        _ => theme.colorScheme.primary.withOpacity(0.9),
+                      }),
+                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.w500,
+                ),
+                // side: BorderSide(color: theme.colorScheme.primary.withOpacity(0.6)),
+                side: MaterialStateBorderSide.resolveWith((states) => switch (states) {
+                      Set() when states.contains(MaterialState.selected) => BorderSide(
+                          color: theme.colorScheme.primary.withOpacity(0.01),
+                        ),
+                      _ => BorderSide(color: theme.colorScheme.primary.withOpacity(0.5)),
+                    }),
+                backgroundColor: theme.scaffoldBackgroundColor,
+                selectedColor: theme.colorScheme.primary.withOpacity(0.5),
+
+                /*
                 labelStyle: TextStyle(
                   color: MaterialStateColor.resolveWith((states) => switch (states) {
                         Set() when states.contains(MaterialState.selected) => theme.colorScheme.onSecondaryContainer,
@@ -677,6 +699,20 @@ class _ListTest1State extends State<ListTest1> {
                 side: BorderSide(color: theme.colorScheme.primary),
                 backgroundColor: theme.scaffoldBackgroundColor,
                 selectedColor: theme.colorScheme.secondaryContainer,
+                */
+                /*
+                labelStyle: TextStyle(
+                  color: MaterialStateColor.resolveWith((states) => switch (states) {
+                        Set() when states.contains(MaterialState.selected) => theme.colorScheme.onSecondaryContainer,
+                        _ => theme.colorScheme.onSecondaryContainer.withOpacity(0.7),
+                      }),
+                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.w500,
+                ),
+                side: const BorderSide(color: Colors.transparent),
+                backgroundColor: theme.colorScheme.secondaryContainer.withOpacity(0.7),
+                selectedColor: theme.colorScheme.secondary.withOpacity(0.7),
+                */
               ),
               child: SizedBox(
                 height: 42,
@@ -687,7 +723,8 @@ class _ListTest1State extends State<ListTest1> {
                     FilterChip(
                         label: Text(filters.first), selected: filterSelected == 0, onSelected: (_) => _applyFilter(0)),
                     const SizedBox(width: 10),
-                    VerticalDivider(color: theme.dividerColor, indent: 5, endIndent: 5),
+                    // VerticalDivider(color: theme.dividerColor.withOpacity(0.7), indent: 5, endIndent: 5),
+                    VerticalDivider(color: theme.dividerColor.withOpacity(0.7), indent: 12, endIndent: 12),
                     const SizedBox(width: 10),
                     ...filters.skip(1).mapIndexed(
                           (i, f) => Padding(
@@ -721,6 +758,7 @@ class _ListTest1State extends State<ListTest1> {
     final theme = Theme.of(context);
 
     return ListView.builder(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       padding: const EdgeInsets.symmetric(vertical: 10),
       itemCount: entries.length + 1,
       itemBuilder: (context, index) {
@@ -751,7 +789,7 @@ class _ListTest1State extends State<ListTest1> {
                       DefaultTextStyle(
                         style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurfaceVariant),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             // Status icon
@@ -768,8 +806,15 @@ class _ListTest1State extends State<ListTest1> {
                             Text(entry.method),
 
                             // Time
-                            const Spacer(),
-                            if (entry.finished) Text('${entry.elapsedTime} • ${entry.timestamp}'),
+                            const SizedBox(width: 16),
+                            if (entry.finished)
+                              Expanded(
+                                child: Text(
+                                  '${entry.elapsedTime} • ${entry.timestamp}',
+                                  textAlign: TextAlign.right,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -778,18 +823,7 @@ class _ListTest1State extends State<ListTest1> {
                       const SizedBox(height: 6),
                       DefaultTextStyle(
                         style: const TextStyle(fontSize: 17),
-                        child: Text.rich(TextSpan(
-                          children: [
-                            /*
-                            TextSpan(
-                              // text: entry.method.padRight(8),
-                              text: '${entry.method} ',
-                              style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-                            ),
-                            */
-                            TextSpan(text: entry.url),
-                          ],
-                        )),
+                        child: Text(entry.url, maxLines: 3, overflow: TextOverflow.ellipsis),
                       ),
                     ],
                   ),
