@@ -618,19 +618,53 @@ class _ListTest1State extends State<ListTest1> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     filled: true,
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.only(right: 4),
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.clear, size: 24),
-                      ),
+                    suffixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: IconButton(
+                            onPressed: () {},
+                            style: IconButton.styleFrom(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                            ),
+                            icon: const Icon(Icons.clear, size: 24),
+                          ),
+                        ),
+
+                        //
+                        Padding(
+                          padding: const EdgeInsets.only(right: 4),
+                          child: FilledButton(
+                            onPressed: () {
+                              setState(() {
+                                filterVisible = !filterVisible;
+                              });
+                            },
+                            style: FilledButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(46, 42),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              foregroundColor: filterVisible
+                                  ? theme.colorScheme.onSecondaryContainer
+                                  : theme.colorScheme.onSecondaryContainer,
+                              backgroundColor: filterVisible
+                                  ? theme.colorScheme.primary.withOpacity(0.5)
+                                  : theme.colorScheme.secondaryContainer.withOpacity(0.8),
+                            ),
+                            child: const Icon(Icons.filter_alt),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
+              const SizedBox(width: 10),
 
               //
-              const SizedBox(width: 10),
+              /*
               IconButton(
                 onPressed: () {
                   setState(() {
@@ -643,9 +677,10 @@ class _ListTest1State extends State<ListTest1> {
                   foregroundColor: filterVisible ? theme.colorScheme.primary : null,
                 ),
               ),
+              const SizedBox(width: 4),
+              */
 
               //
-              const SizedBox(width: 4),
               IconButton(
                 onPressed: () {},
                 icon: const Icon(Icons.delete_sweep),
