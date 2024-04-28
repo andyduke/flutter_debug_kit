@@ -1,6 +1,7 @@
 import 'package:debug_kit/debug_kit.dart';
 import 'package:debug_kit_example/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -579,6 +580,8 @@ class _ListTest1State extends State<ListTest1> {
     ),
   ];
 
+  final TextEditingController searchFieldController = TextEditingController(text: '');
+
   bool filterVisible = false;
   int filterSelected = 0;
   List<String> filters = [
@@ -609,6 +612,7 @@ class _ListTest1State extends State<ListTest1> {
             children: [
               Expanded(
                 child: TextField(
+                  controller: searchFieldController,
                   style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                   decoration: InputDecoration(
                     hintText: MaterialLocalizations.of(context).searchFieldLabel,
@@ -618,25 +622,34 @@ class _ListTest1State extends State<ListTest1> {
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     filled: true,
-                    suffixIcon: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child: IconButton(
-                            onPressed: () {},
-                            style: IconButton.styleFrom(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (searchFieldController.text.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 4),
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    searchFieldController.clear();
+                                  });
+                                },
+                                style: IconButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: const Size(40, 36),
+                                  maximumSize: const Size(40, 36),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                  visualDensity: VisualDensity.standard,
+                                ),
+                                icon: const Icon(Icons.clear, size: 24),
+                              ),
                             ),
-                            icon: const Icon(Icons.clear, size: 24),
-                          ),
-                        ),
 
-                        //
-                        Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child: FilledButton(
+                          //
+                          FilledButton(
                             onPressed: () {
                               setState(() {
                                 filterVisible = !filterVisible;
@@ -644,8 +657,11 @@ class _ListTest1State extends State<ListTest1> {
                             },
                             style: FilledButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              minimumSize: const Size(46, 42),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              // minimumSize: const Size(46, 42),
+                              minimumSize: const Size(40, 36),
+                              maximumSize: const Size(40, 36),
+                              visualDensity: VisualDensity.standard,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                               foregroundColor: filterVisible
                                   ? theme.colorScheme.onSecondaryContainer
                                   : theme.colorScheme.onSecondaryContainer,
@@ -655,10 +671,13 @@ class _ListTest1State extends State<ListTest1> {
                             ),
                             child: const Icon(Icons.filter_alt),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
+                  onChanged: (newValue) => setState(() {
+                    searchFieldController.text = newValue;
+                  }),
                 ),
               ),
               const SizedBox(width: 10),
