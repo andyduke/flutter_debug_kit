@@ -20,20 +20,25 @@ import 'package:flutter/material.dart';
 
 class DebugKitPanelLogPage extends DebugKitPanelBasePage {
   static const String defaultName = 'log';
+  static const String defaultTitle = 'Log';
+  static const IconData defaultIcon = Icons.history_rounded;
 
   @override
-  final String name = defaultName;
+  final String name;
 
   @override
-  final String title = 'Log';
+  final String title;
 
   @override
-  final IconData? icon = Icons.history_rounded;
+  final IconData? icon;
 
   final DebugKitLogController log;
 
   DebugKitPanelLogPage({
     required this.log,
+    this.name = defaultName,
+    this.title = defaultTitle,
+    this.icon = defaultIcon,
   });
 
   @override

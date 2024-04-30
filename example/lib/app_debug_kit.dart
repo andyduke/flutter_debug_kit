@@ -629,25 +629,48 @@ class _ListTest1State extends State<ListTest1> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           if (searchFieldController.text.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 4),
-                              child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    searchFieldController.clear();
-                                  });
-                                },
-                                style: IconButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: const Size(40, 36),
-                                  maximumSize: const Size(40, 36),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                  visualDensity: VisualDensity.standard,
-                                ),
-                                icon: const Icon(Icons.clear, size: 24),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  searchFieldController.clear();
+                                });
+                              },
+                              style: IconButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: const Size(40, 36),
+                                maximumSize: const Size(40, 36),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                visualDensity: VisualDensity.standard,
                               ),
+                              icon: const Icon(Icons.clear, size: 24),
                             ),
 
+                          //
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(border: Border(left: BorderSide(color: theme.dividerColor))),
+                              child: const SizedBox(width: 0, height: 24),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                filterVisible = !filterVisible;
+                              });
+                            },
+                            style: IconButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(40, 36),
+                              maximumSize: const Size(40, 36),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                              visualDensity: VisualDensity.standard,
+                            ),
+                            icon: const Icon(Icons.filter_alt, size: 24),
+                            color: !filterVisible ? null : theme.colorScheme.primary,
+                          ),
+
+                          /*
                           //
                           FilledButton(
                             onPressed: () {
@@ -671,6 +694,7 @@ class _ListTest1State extends State<ListTest1> {
                             ),
                             child: const Icon(Icons.filter_alt),
                           ),
+                          */
                         ],
                       ),
                     ),
