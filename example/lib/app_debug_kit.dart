@@ -799,7 +799,7 @@ class _ListTest1State extends State<ListTest1> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(top: 16, bottom: 4),
           child: Text(
-            'Requests  •  ${entries.length}'.toUpperCase(),
+            'Last Requests  •  ${entries.length}'.toUpperCase(),
             style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurfaceVariant),
           ),
         ),
