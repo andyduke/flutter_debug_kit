@@ -621,6 +621,11 @@ class _ListTest1State extends State<ListTest1> {
                       borderSide: BorderSide.none,
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    // border: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.circular(24),
+                    //   borderSide: BorderSide.none,
+                    // ),
+                    // contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                     filled: true,
                     suffixIcon: Padding(
                       padding: const EdgeInsets.all(4.0),
@@ -793,7 +798,7 @@ class _ListTest1State extends State<ListTest1> {
                 */
               ),
               child: SizedBox(
-                height: 42,
+                height: 43,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
