@@ -64,9 +64,6 @@ abstract class DebugKitThemeData {
       colorScheme: darkScheme,
       useMaterial3: true,
 
-      // TODO: DEBUG
-      // visualDensity: VisualDensity.standard,
-
       focusColor: darkScheme.secondaryContainer,
 
       // AppBar theme

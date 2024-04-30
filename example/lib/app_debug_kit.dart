@@ -617,7 +617,7 @@ class _ListTest1State extends State<ListTest1> {
                   decoration: InputDecoration(
                     hintText: MaterialLocalizations.of(context).searchFieldLabel,
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -644,7 +644,7 @@ class _ListTest1State extends State<ListTest1> {
                                 padding: EdgeInsets.zero,
                                 minimumSize: const Size(40, 36),
                                 maximumSize: const Size(40, 36),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
                                 visualDensity: VisualDensity.standard,
                               ),
                               icon: const Icon(Icons.clear, size: 24),
@@ -668,7 +668,7 @@ class _ListTest1State extends State<ListTest1> {
                               padding: EdgeInsets.zero,
                               minimumSize: const Size(40, 36),
                               maximumSize: const Size(40, 36),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
                               visualDensity: VisualDensity.standard,
                             ),
                             icon: const Icon(Icons.filter_alt, size: 24),
@@ -826,7 +826,7 @@ class _ListTest1State extends State<ListTest1> {
 
         // List title
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(top: 16, bottom: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(top: 24, bottom: 4),
           child: Text(
             'Last Requests  •  ${entries.length}'.toUpperCase(),
             style: TextStyle(fontSize: 14, color: theme.colorScheme.onSurfaceVariant),
