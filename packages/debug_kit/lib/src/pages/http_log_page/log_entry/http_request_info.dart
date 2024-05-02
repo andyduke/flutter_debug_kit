@@ -14,12 +14,17 @@ class DebugKitHttpRequestInfo {
   /// HTTP request headers.
   final Map<String, String> headers;
 
+  /// Date and time when the request was sent.
+  final DateTime timestamp;
+
   DebugKitHttpRequestInfo({
     required this.id,
     required this.method,
     required this.url,
     this.headers = const {},
-  });
+  }) : timestamp = DateTime.now();
+
+  String get summary => '$url';
 
   @override
   bool operator ==(covariant DebugKitHttpRequestInfo other) => id == other.id;
