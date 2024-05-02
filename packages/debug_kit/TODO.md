@@ -1,5 +1,5 @@
 
-- [ ] Refactor LogHistory with basic class LogList<E>
+- [x] Refactor LogHistory with basic class LogList<E>
 - [ ] Refactor LogPage & HttpLogPage with FilteredListView 3.0
 - [ ] Find out why lags occur when switching to some pages, such as Log and Network
 

@@ -11,12 +11,13 @@ import 'package:debug_kit/src/widgets/filter_bar.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/filtered_list_view.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/models/filter_data.dart';
-import 'package:debug_kit/src/widgets/floating_bottom_bar.dart';
-import 'package:debug_kit/src/widgets/keyboard_dismisser.dart';
+import 'package:debug_kit/src/widgets/list_view_builders/list_view_builders.dart';
 import 'package:debug_kit/src/widgets/search_field.dart';
+import 'package:debug_kit/src/widgets/sliver_center.dart';
 import 'package:debug_kit/src/widgets/toolbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class DebugKitPanelLogPage extends DebugKitPanelBasePage {
   static const String defaultName = 'log';
@@ -68,10 +69,31 @@ class _LogFilterData extends FilterData {
 
   @override
   String toString() => '_LogFilterData(${level ?? 'none'})';
+
+  @override
+  bool operator ==(covariant _LogFilterData other) => level == other.level;
+
+  @override
+  int get hashCode => level.hashCode;
 }
 
 class _LogViewerState extends State<_LogViewer> {
-  final listController = FilteredListController<_LogFilterData>();
+  late final listController = FilteredListController<_LogFilterData, DebugKitLogRecord>(
+    onFetch: (controller) async {
+      final list = widget.log.reversed;
+      final result =
+          ((controller.search != null && controller.search!.isNotEmpty) || (controller.filter?.level != null))
+              ? list.where(
+                  (e) =>
+                      ((controller.search == null) ||
+                          (e.message.containsInsensitive(controller.search!) ||
+                              (e.tag?.containsInsensitive(controller.search!) ?? false))) &&
+                      (controller.filter?.level == null || e.level == controller.filter?.level),
+                )
+              : list;
+      return result.toList();
+    },
+  );
   bool selectionMode = false;
   bool filterBar = false;
 
@@ -96,156 +118,257 @@ class _LogViewerState extends State<_LogViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return ListenableBuilder(
-      listenable: widget.log,
-      builder: (context, child) {
-        final logReversed = widget.log.reversed;
-
-        return FilteredListView<_LogFilterData>(
-          controller: listController,
-          filterBuilder: (context, controller) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Toolbar(
-                leading: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: SearchField(
-                        onChange: (value) => controller.apply(search: value),
-                      ),
-                    ),
-                  ),
-                ],
-                trailing: [
-                  // Toggle filter bar button
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        filterBar = !filterBar;
-                      });
-
-                      if (!filterBar) {
-                        controller.reset(search: false);
-                      }
-                    },
-                    icon: const Icon(Icons.filter_alt),
-                    tooltip: 'Toggle filters',
-                    style: TextButton.styleFrom(
-                      foregroundColor: filterBar ? theme.colorScheme.primary : null,
-                    ),
-                  ),
-
-                  // TODO: Move to dropdown menu?
-                  // Clear log button
-                  const SizedBox(width: 10),
-                  IconButton(
-                    onPressed: _clear,
-                    icon: const Icon(Icons.delete_sweep),
-                    tooltip: 'Remove all',
-                    style: TextButton.styleFrom(
-                      foregroundColor: theme.colorScheme.error,
-                    ),
-                  ),
-                ],
-              ),
-
-              //
-              if (isDesktop && filterBar) _LogPageFilterBar(controller: controller),
-            ],
+    return CustomScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      slivers: [
+        SliverToBoxAdapter(
+          child: _LogPageToolbar(
+            controller: listController,
+            filterBar: filterBar,
+            onFilterBarToggle: (newValue) => setState(() {
+              filterBar = newValue;
+            }),
+            onClear: _clear,
           ),
-          builder: (context, controller) {
-            // TODO: Refactor - extract to filter method
-            final filteredLog =
-                ((controller.search != null && controller.search!.isNotEmpty) || (controller.filter?.level != null))
-                    ? logReversed.where(
-                        (e) =>
-                            ((controller.search == null) ||
-                                (e.message.containsInsensitive(controller.search!) ||
-                                    (e.tag?.containsInsensitive(controller.search!) ?? false))) &&
-                            (controller.filter?.level == null || e.level == controller.filter?.level),
-                      )
-                    : logReversed;
+        ),
 
-            return Stack(
-              children: [
-                filteredLog.isEmpty
-                    ? const EmptyListView(keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag)
-                    : KeyboardDismisser(
-                        child: ListView.builder(
-                          // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                          padding: const EdgeInsets.only(
-                              bottom: FloatingBottomBar.kFloatingBarHeight + FloatingBottomBar.kFloatingBarOffset + 8),
-                          itemCount: filteredLog.length + ((!isDesktop && filterBar) ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if ((!isDesktop && filterBar) && index == 0) {
-                              return _LogPageFilterBar(controller: controller);
-                            }
+        //
+        FilteredListView(
+          controller: listController,
+          builder: (context, controller, list) {
+            return SliverList.builder(
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                final record = list.elementAt(index);
 
-                            final record = filteredLog.elementAt(index - ((!isDesktop && filterBar) ? 1 : 0));
-
-                            // TODO: LogRecordTile
-                            return ListTile(
-                              onLongPress: () {
-                                setState(() {
-                                  selectionMode = !selectionMode;
-                                });
-                              },
-                              title: Text('${record.tag} | ${record.message}'),
-                              subtitle: Text('${record.time}'),
-                            );
-                          },
-                        ),
-                      ),
-
-                // Floating bottom bar
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: FloatingBottomBar(
-                      highlighted: selectionMode,
-                      children: [
-                        if (selectionMode)
-                          const Padding(
-                            padding: EdgeInsets.only(left: 16, right: 8),
-                            child: Text('(1)', style: TextStyle(fontWeight: FontWeight.bold)),
-                          ),
-
-                        //
-                        TextButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.share),
-                          label: const Text('Export'),
-                        ),
-
-                        //
-                        if (selectionMode)
-                          TextButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.delete),
-                            label: const Text('Remove'),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                // TODO: LogRecordTile
+                return ListTile(
+                  onLongPress: () {
+                    setState(() {
+                      selectionMode = !selectionMode;
+                    });
+                  },
+                  title: Text('${record.tag} | ${record.message}'),
+                  subtitle: Text('${record.time}'),
+                );
+              },
             );
           },
+          emptyBuilder: (context, controller) => const SliverCenter(
+            child: Text('Empty'),
+          ),
+          waitingBuilder: (context) => const SliverCenter(
+            child: CircularProgressIndicator(),
+          ),
+          errorBuilder: (context, controller, error, stackTrace) => SliverCenter(
+            child: Text('$error\n\n$stackTrace'),
+          ),
+        ),
+      ],
+    );
+
+    /*
+    return FilteredListView(
+      controller: listController,
+      filterBuilder: (context, controller) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Toolbar(
+            leading: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: SearchField(
+                    onChange: (value) => controller.apply(search: value),
+                  ),
+                ),
+              ),
+            ],
+            trailing: [
+              // Toggle filter bar button
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    filterBar = !filterBar;
+                  });
+
+                  if (!filterBar) {
+                    controller.reset(search: false);
+                  }
+                },
+                icon: const Icon(Icons.filter_alt),
+                tooltip: 'Toggle filters',
+                style: TextButton.styleFrom(
+                  foregroundColor: filterBar ? theme.colorScheme.primary : null,
+                ),
+              ),
+
+              // TODO: Move to dropdown menu?
+              // Clear log button
+              const SizedBox(width: 10),
+              IconButton(
+                onPressed: _clear,
+                icon: const Icon(Icons.delete_sweep),
+                tooltip: 'Remove all',
+                style: TextButton.styleFrom(
+                  foregroundColor: theme.colorScheme.error,
+                ),
+              ),
+            ],
+          ),
+
+          //
+          if (isDesktop && filterBar) _LogPageFilterBar(controller: controller),
+        ],
+      ),
+      builder: (context, controller, list) {
+        return Stack(
+          children: [
+            list.isEmpty
+                ? const EmptyListView(keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag)
+                : KeyboardDismisser(
+                    child: ListView.builder(
+                      // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: const EdgeInsets.only(
+                          bottom: FloatingBottomBar.kFloatingBarHeight + FloatingBottomBar.kFloatingBarOffset + 8),
+                      itemCount: list.length + ((!isDesktop && filterBar) ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if ((!isDesktop && filterBar) && index == 0) {
+                          return _LogPageFilterBar(controller: controller);
+                        }
+
+                        final record = list.elementAt(index - ((!isDesktop && filterBar) ? 1 : 0));
+
+                        // TODO: LogRecordTile
+                        return ListTile(
+                          onLongPress: () {
+                            setState(() {
+                              selectionMode = !selectionMode;
+                            });
+                          },
+                          title: Text('${record.tag} | ${record.message}'),
+                          subtitle: Text('${record.time}'),
+                        );
+                      },
+                    ),
+                  ),
+
+            // Floating bottom bar
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: FloatingBottomBar(
+                  highlighted: selectionMode,
+                  children: [
+                    if (selectionMode)
+                      const Padding(
+                        padding: EdgeInsets.only(left: 16, right: 8),
+                        child: Text('(1)', style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+
+                    //
+                    TextButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.share),
+                      label: const Text('Export'),
+                    ),
+
+                    //
+                    if (selectionMode)
+                      TextButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.delete),
+                        label: const Text('Remove'),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
+    );
+    */
+  }
+}
+
+class _LogPageToolbar extends StatelessWidget {
+  final FilteredListController<_LogFilterData, DebugKitLogRecord> controller;
+  final bool filterBar;
+  final ValueChanged<bool> onFilterBarToggle;
+  final VoidCallback onClear;
+
+  const _LogPageToolbar({
+    required this.controller,
+    required this.filterBar,
+    required this.onFilterBarToggle,
+    required this.onClear,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Toolbar(
+          leading: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: SearchField(
+                  value: controller.search,
+                  onChange: (value) => controller.apply(search: value),
+                ),
+              ),
+            ),
+          ],
+          trailing: [
+            // Toggle filter bar button
+            IconButton(
+              onPressed: () {
+                onFilterBarToggle(!filterBar);
+
+                if (!filterBar) {
+                  controller.reset(search: false);
+                }
+              },
+              icon: const Icon(Icons.filter_alt),
+              tooltip: 'Toggle filters',
+              style: TextButton.styleFrom(
+                foregroundColor: filterBar ? theme.colorScheme.primary : null,
+              ),
+            ),
+
+            // TODO: Move to dropdown menu?
+            // Clear log button
+            const SizedBox(width: 10),
+            IconButton(
+              onPressed: onClear,
+              icon: const Icon(Icons.delete_sweep),
+              tooltip: 'Remove all',
+              style: TextButton.styleFrom(
+                foregroundColor: theme.colorScheme.error,
+              ),
+            ),
+          ],
+        ),
+
+        // Filter bar
+        if (filterBar) _LogPageFilterBar(controller: controller),
+      ],
     );
   }
 }
 
 class _LogPageFilterBar extends StatelessWidget {
-  final FilteredListController<_LogFilterData> controller;
+  final FilteredListController<_LogFilterData, DebugKitLogRecord> controller;
 
   const _LogPageFilterBar({
     super.key,

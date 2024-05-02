@@ -1,4 +1,6 @@
 import 'package:debug_kit/src/theme/extensions/app_bar_tabs_theme.dart';
+import 'package:debug_kit/src/theme/extensions/list_tile_theme.dart';
+import 'package:debug_kit/src/theme/extensions/search_bar_theme.dart';
 import 'package:debug_kit/src/theme/utils/color_set.dart';
 import 'package:debug_kit/src/widgets/custom_tabs/custom_tabbar.dart';
 import 'package:flutter/material.dart';
@@ -142,12 +144,54 @@ abstract class DebugKitThemeData {
             selected: ColorSet(foreground: darkScheme.onPrimary, background: darkScheme.primary),
             hovered: ColorSet(foreground: darkScheme.onPrimaryContainer, background: darkScheme.primaryContainer),
           ),
-          // tabForeColor: darkScheme.primary,
-          // tabBackColor: Colors.transparent,
-          // selectedTabForeColor: darkScheme.onPrimary,
-          // selectedTabBackColor: darkScheme.primary,
-          // hoveredTabForeColor: darkScheme.onPrimaryContainer,
-          // hoveredTabBackColor: darkScheme.primaryContainer,
+        ),
+        DebugKitListTileTheme(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          supertitleTextStyle: TextStyle(fontSize: 14, color: darkScheme.onSurfaceVariant),
+          titleTextStyle: const TextStyle(fontSize: 17),
+          subtitleTextStyle: TextStyle(fontSize: 14, color: darkScheme.onSurfaceVariant),
+          titleSpacing: 6.0,
+        ),
+        DebugKitSearchBarTheme(
+          padding: const EdgeInsets.only(top: 20, bottom: 18),
+          searchBarPadding: const EdgeInsets.symmetric(horizontal: 16),
+          searchFieldPadding: const EdgeInsets.symmetric(horizontal: 10),
+          searchFieldTextStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+          searchFieldButtonStyle: IconButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(40, 36),
+            maximumSize: const Size(40, 36),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            visualDensity: VisualDensity.standard,
+          ),
+          searchFieldDividerPadding: const EdgeInsets.symmetric(horizontal: 4),
+          filterBarPadding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(top: 16),
+          filterBarChipStyle: ChipThemeData(
+            shape: const StadiumBorder(),
+            showCheckmark: false,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+
+            //
+            labelStyle: TextStyle(
+              color: MaterialStateColor.resolveWith((states) => switch (states) {
+                    Set() when states.contains(MaterialState.selected) => darkScheme.onSecondaryContainer,
+                    _ => darkScheme.primary.withOpacity(0.9),
+                  }),
+              letterSpacing: 0.8,
+              fontWeight: FontWeight.w500,
+            ),
+            side: MaterialStateBorderSide.resolveWith((states) => switch (states) {
+                  Set() when states.contains(MaterialState.selected) => BorderSide(
+                      color: darkScheme.primary.withOpacity(0.01),
+                    ),
+                  _ => BorderSide(color: darkScheme.primary.withOpacity(0.5)),
+                }),
+            backgroundColor: darkScheme.background,
+            selectedColor: darkScheme.primary.withOpacity(0.5),
+          ),
+          filterBarChipPadding: const EdgeInsets.only(right: 16),
+          filterBarDividerPadding: const EdgeInsets.symmetric(horizontal: 10),
         ),
       ],
     );
@@ -226,12 +270,54 @@ abstract class DebugKitThemeData {
             selected: ColorSet(foreground: lightScheme.onPrimary, background: lightScheme.primary),
             hovered: ColorSet(foreground: lightScheme.onPrimary, background: lightScheme.primary.withOpacity(0.62)),
           ),
-          // tabForeColor: lightScheme.primary,
-          // tabBackColor: Colors.transparent,
-          // selectedTabForeColor: lightScheme.onPrimary,
-          // selectedTabBackColor: lightScheme.primary,
-          // hoveredTabForeColor: lightScheme.onPrimary,
-          // hoveredTabBackColor: lightScheme.primary.withOpacity(0.5),
+        ),
+        DebugKitListTileTheme(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          supertitleTextStyle: TextStyle(fontSize: 14, color: lightScheme.onSurfaceVariant),
+          titleTextStyle: const TextStyle(fontSize: 17),
+          subtitleTextStyle: TextStyle(fontSize: 14, color: lightScheme.onSurfaceVariant),
+          titleSpacing: 6.0,
+        ),
+        DebugKitSearchBarTheme(
+          padding: const EdgeInsets.only(top: 20, bottom: 18),
+          searchBarPadding: const EdgeInsets.symmetric(horizontal: 16),
+          searchFieldPadding: const EdgeInsets.symmetric(horizontal: 10),
+          searchFieldTextStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+          searchFieldButtonStyle: IconButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(40, 36),
+            maximumSize: const Size(40, 36),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+            visualDensity: VisualDensity.standard,
+          ),
+          searchFieldDividerPadding: const EdgeInsets.symmetric(horizontal: 4),
+          filterBarPadding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(top: 16),
+          filterBarChipStyle: ChipThemeData(
+            shape: const StadiumBorder(),
+            showCheckmark: false,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+
+            //
+            labelStyle: TextStyle(
+              color: MaterialStateColor.resolveWith((states) => switch (states) {
+                    Set() when states.contains(MaterialState.selected) => lightScheme.onSecondaryContainer,
+                    _ => lightScheme.primary.withOpacity(0.9),
+                  }),
+              letterSpacing: 0.8,
+              fontWeight: FontWeight.w500,
+            ),
+            side: MaterialStateBorderSide.resolveWith((states) => switch (states) {
+                  Set() when states.contains(MaterialState.selected) => BorderSide(
+                      color: lightScheme.primary.withOpacity(0.01),
+                    ),
+                  _ => BorderSide(color: lightScheme.primary.withOpacity(0.5)),
+                }),
+            backgroundColor: lightScheme.background,
+            selectedColor: lightScheme.primary.withOpacity(0.5),
+          ),
+          filterBarChipPadding: const EdgeInsets.only(right: 16),
+          filterBarDividerPadding: const EdgeInsets.symmetric(horizontal: 10),
         ),
       ],
     );

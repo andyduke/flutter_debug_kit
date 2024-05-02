@@ -302,7 +302,17 @@ class _HttpRequestViewState extends State<HttpRequestView> {
     });
 
     final api = context.read<ApiClient>();
-    _response = await api.send(Uri.parse('https://httpbin.org/get'));
+
+    await Future.wait<http.BaseResponse>([
+      api.send(Uri.parse('https://httpbin.org/get')),
+      api.send(Uri.parse('https://httpbin.org/status/300')),
+      api.send(Uri.parse('https://httpbin.org/status/404')),
+      api.send(Uri.parse('https://httpbin.org/status/500')),
+
+      //
+      // api.send(Uri.parse('https://httpbin.org/delay/5')).then((v) => _response = v),
+    ]);
+
     setState(() {
       _running = false;
     });
@@ -317,7 +327,7 @@ class _HttpRequestViewState extends State<HttpRequestView> {
         !_running
             ? ElevatedButton(
                 onPressed: () => _send(),
-                child: const Text('Send request'),
+                child: const Text('Send requests'),
               )
             : const SizedBox.square(dimension: 32, child: CircularProgressIndicator()),
         if (!_running && _response != null)

@@ -33,8 +33,10 @@ class DebugKitScrollBehavior extends MaterialScrollBehavior {
     switch (axisDirectionToAxis(details.direction)) {
       case Axis.horizontal:
         return child;
+
+      //
       case Axis.vertical:
-        assert(details.controller != null);
+        // assert(details.controller != null);
 
         return (details.controller?.hasClients ?? false)
             ? child

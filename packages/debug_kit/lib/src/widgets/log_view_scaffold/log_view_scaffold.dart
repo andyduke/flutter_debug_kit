@@ -25,6 +25,7 @@ class LogViewFilterItem<F> {
   });
 }
 
+@Deprecated('Use FilteredListScaffold instead.')
 class LogViewScaffold<F, E> extends StatefulWidget {
   final Iterable<LogViewFilterItem<F>> filterValues;
   final LogViewScaffoldFilterCallback<F, E> onFilter;
@@ -51,97 +52,128 @@ class _LogViewScaffoldFilterData<F> extends FilterData {
   final F? value;
 
   _LogViewScaffoldFilterData(this.value);
+
+  @override
+  bool operator ==(covariant _LogViewScaffoldFilterData<F> other) => value == other.value;
+
+  @override
+  int get hashCode => value.hashCode;
 }
 
 class _LogViewScaffoldState<F, E> extends State<LogViewScaffold<F, E>> {
-  final listController = FilteredListController<_LogViewScaffoldFilterData<F>>();
+  late final listController = FilteredListController<_LogViewScaffoldFilterData<F>, E>(
+    onFetch: (controller) async {
+      final list = widget.listGetter();
+      final result = widget.onFilter(list, controller.search, controller.filter?.value);
+      return result.toList();
+    },
+  );
   bool filterBar = false;
 
   final bool isDesktop = kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
   @override
+  void initState() {
+    super.initState();
+
+    widget.listListenable.addListener(_update);
+  }
+
+  @override
+  void didUpdateWidget(covariant LogViewScaffold<F, E> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.listListenable != oldWidget.listListenable) {
+      oldWidget.listListenable.removeListener(_update);
+      widget.listListenable.addListener(_update);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.listListenable.removeListener(_update);
+
+    super.dispose();
+  }
+
+  void _update() {
+    listController.reload();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ListenableBuilder(
-      listenable: widget.listListenable,
-      builder: (context, child) {
-        final logReversed = widget.listGetter();
-
-        return FilteredListView<_LogViewScaffoldFilterData<F>>(
-          controller: listController,
-          filterBuilder: (context, controller) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Toolbar(
-                leading: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: SearchField(
-                        onChange: (value) => controller.apply(search: value),
-                      ),
-                    ),
+    return FilteredListView(
+      controller: listController,
+      filterBuilder: (context, controller) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Toolbar(
+            leading: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: SearchField(
+                    onChange: (value) => controller.apply(search: value),
                   ),
-                ],
-                trailing: [
-                  // Toggle filter bar button
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        filterBar = !filterBar;
-                      });
+                ),
+              ),
+            ],
+            trailing: [
+              // Toggle filter bar button
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    filterBar = !filterBar;
+                  });
 
-                      if (!filterBar) {
-                        controller.reset(search: false);
-                      }
-                    },
-                    icon: const Icon(Icons.filter_alt),
-                    tooltip: 'Toggle filters',
-                    style: TextButton.styleFrom(
-                      foregroundColor: filterBar ? theme.colorScheme.primary : null,
-                    ),
-                  ),
-
-                  ...widget.toolbarActions,
-                ],
+                  if (!filterBar) {
+                    controller.reset(search: false);
+                  }
+                },
+                icon: const Icon(Icons.filter_alt),
+                tooltip: 'Toggle filters',
+                style: TextButton.styleFrom(
+                  foregroundColor: filterBar ? theme.colorScheme.primary : null,
+                ),
               ),
 
-              //
-              if (isDesktop && filterBar)
-                _LogViewFilterBar<F>(
-                  value: controller.filter?.value,
-                  values: widget.filterValues,
-                  onFilter: (value) => controller.apply(filter: _LogViewScaffoldFilterData(value)),
-                ),
+              ...widget.toolbarActions,
             ],
           ),
-          builder: (context, controller) {
-            final filteredLog = widget.onFilter(logReversed, controller.search, controller.filter?.value);
 
-            return Stack(
-              children: [
-                KeyboardDismisser(
-                  child: ListView.builder(
-                    itemCount: filteredLog.length + ((!isDesktop && filterBar) ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if ((!isDesktop && filterBar) && index == 0) {
-                        return _LogViewFilterBar<F>(
-                          value: controller.filter?.value,
-                          values: widget.filterValues,
-                          onFilter: (value) => controller.apply(filter: _LogViewScaffoldFilterData(value)),
-                        );
-                      }
+          //
+          if (isDesktop && filterBar)
+            _LogViewFilterBar<F>(
+              value: controller.filter?.value,
+              values: widget.filterValues,
+              onFilter: (value) => controller.apply(filter: _LogViewScaffoldFilterData(value)),
+            ),
+        ],
+      ),
+      builder: (context, controller, list) {
+        return Stack(
+          children: [
+            KeyboardDismisser(
+              child: ListView.builder(
+                itemCount: list.length + ((!isDesktop && filterBar) ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if ((!isDesktop && filterBar) && index == 0) {
+                    return _LogViewFilterBar<F>(
+                      value: controller.filter?.value,
+                      values: widget.filterValues,
+                      onFilter: (value) => controller.apply(filter: _LogViewScaffoldFilterData(value)),
+                    );
+                  }
 
-                      final record = filteredLog.elementAt(index - ((!isDesktop && filterBar) ? 1 : 0));
-                      return widget.itemBuilder(record);
-                    },
-                  ),
-                ),
-              ],
-            );
-          },
+                  final record = list.elementAt(index - ((!isDesktop && filterBar) ? 1 : 0));
+                  return widget.itemBuilder(record);
+                },
+              ),
+            ),
+          ],
         );
       },
     );

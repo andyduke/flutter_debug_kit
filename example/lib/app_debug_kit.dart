@@ -1,7 +1,6 @@
 import 'package:debug_kit/debug_kit.dart';
 import 'package:debug_kit_example/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

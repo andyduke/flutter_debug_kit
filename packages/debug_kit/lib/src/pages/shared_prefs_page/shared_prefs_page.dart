@@ -6,6 +6,7 @@ import 'package:debug_kit/src/pages/widgets/key_value_grid.dart';
 import 'package:debug_kit/src/utils/string_ext.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/filtered_list_view.dart';
+import 'package:debug_kit/src/widgets/filtered_list_view/models/filter_data.dart';
 import 'package:debug_kit/src/widgets/keyboard_dismisser.dart';
 import 'package:debug_kit/src/widgets/search_field.dart';
 import 'package:debug_kit/src/widgets/toolbar.dart';
@@ -28,24 +29,60 @@ class DebugKitPanelSharedPrefsPage extends DebugKitPanelBasePage {
 
   @override
   Widget build(BuildContext context, DebugKitController controller) {
-    return const _SharedPrefsInspector();
+    return FutureBuilder(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        return switch (snapshot) {
+          AsyncSnapshot(connectionState: ConnectionState.done, hasData: true) =>
+            _SharedPrefsInspector(storage: snapshot.data!),
+          AsyncSnapshot(
+            connectionState: ConnectionState.done,
+            hasError: true,
+            error: Object error,
+            stackTrace: StackTrace? stackTrace
+          ) =>
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Error loading shared preferences.\n\n$error\n\n$stackTrace',
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
+            ),
+          _ => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        };
+      },
+    );
   }
 }
 
 class _SharedPrefsInspector extends StatefulWidget {
-  const _SharedPrefsInspector();
+  final SharedPreferences storage;
+
+  const _SharedPrefsInspector({
+    required this.storage,
+  });
 
   @override
   State<_SharedPrefsInspector> createState() => _SharedPrefsInspectorState();
 }
 
 class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
-  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-  final listController = FilteredListController();
-
-  void reload() {
-    setState(() {});
-  }
+  late final listController = FilteredListController<FilterData, String>(
+    onFetch: (controller) async {
+      final keys = widget.storage.getKeys();
+      final gridKeys = (controller.search == null || controller.search!.isEmpty)
+          ? keys
+          : keys.where((k) => k.containsInsensitive(controller.search!));
+      return gridKeys.toList();
+    },
+  );
 
   Future<void> _edit(SharedPreferences storage, String key, Object? value) async {
     final newValue = await EditStorageEntryDialog.show(
@@ -85,7 +122,7 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
           throw Exception('Invalid value type: ${newValue.runtimeType}');
       }
 
-      reload();
+      listController.reload();
     }
   }
 
@@ -108,7 +145,7 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
     ).then((result) {
       if (result) {
         storage.remove(key);
-        reload();
+        listController.reload();
       }
     });
   }
@@ -136,80 +173,49 @@ class _SharedPrefsInspectorState extends State<_SharedPrefsInspector> {
     ).then((result) {
       if (result) {
         storage.clear();
-        reload();
+        listController.reload();
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: prefs,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Center(
+    final theme = Theme.of(context);
+    final keys = widget.storage.getKeys();
+
+    return FilteredListView(
+      controller: listController,
+      filterBuilder: (context, controller) => Toolbar(
+        leading: [
+          Expanded(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: SearchField(
+                onChange: (value) => controller.apply(search: value),
+              ),
             ),
-          );
-        } else {
-          if (!snapshot.hasError) {
-            final theme = Theme.of(context);
-            final storage = snapshot.data!;
-            final keys = storage.getKeys();
-
-            return FilteredListView(
-              controller: listController,
-              filterBuilder: (context, controller) => Toolbar(
-                leading: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: SearchField(
-                        onChange: (value) => controller.apply(search: value),
-                      ),
-                    ),
-                  ),
-                ],
-                trailing: [
-                  IconButton(
-                    onPressed: keys.isNotEmpty ? () => _clearAll(storage) : null,
-                    icon: const Icon(Icons.delete_sweep),
-                    tooltip: 'Remove all',
-                    style: TextButton.styleFrom(
-                      foregroundColor: theme.colorScheme.error,
-                    ),
-                  ),
-                ],
-              ),
-              builder: (context, controller) {
-                final gridKeys = (controller.search == null || controller.search!.isEmpty)
-                    ? keys
-                    : keys.where((k) => k.containsInsensitive(controller.search!));
-
-                return KeyboardDismisser(
-                  child: KeyValueGrid(
-                    // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                    entries: {for (var k in gridKeys) k: storage.get(k)},
-                    onEdit: (key) => _edit(storage, key, storage.get(key)),
-                    onDelete: (key) => _delete(storage, key),
-                  ),
-                );
-              },
-            );
-          } else {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Error loading shared preferences.\n\n${snapshot.error}\n\n${snapshot.stackTrace}',
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              ),
-            );
-          }
-        }
+          ),
+        ],
+        trailing: [
+          IconButton(
+            onPressed: keys.isNotEmpty ? () => _clearAll(widget.storage) : null,
+            icon: const Icon(Icons.delete_sweep),
+            tooltip: 'Remove all',
+            style: TextButton.styleFrom(
+              foregroundColor: theme.colorScheme.error,
+            ),
+          ),
+        ],
+      ),
+      builder: (context, controller, list) {
+        return KeyboardDismisser(
+          child: KeyValueGrid(
+            // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            entries: {for (var k in list) k: widget.storage.get(k)},
+            onEdit: (key) => _edit(widget.storage, key, widget.storage.get(key)),
+            onDelete: (key) => _delete(widget.storage, key),
+          ),
+        );
       },
     );
   }

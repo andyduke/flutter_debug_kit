@@ -1,7 +1,20 @@
 import 'package:debug_kit/src/widgets/filtered_list_view/models/filter_data.dart';
 import 'package:flutter/widgets.dart';
 
-class FilteredListController<F extends FilterData> with ChangeNotifier {
+typedef FilteredListFetcher<F extends FilterData, T> = Future<List<T>> Function(
+  FilteredListController<F, T> controller,
+);
+
+class FilteredListController<F extends FilterData, T> with ChangeNotifier {
+  final FilteredListFetcher<F, T> onFetch;
+
+  FilteredListController({required this.onFetch});
+
+  Future<List<T>>? _data;
+
+  bool get reloading => _reloading;
+  bool _reloading = false;
+
   String? get search => _search;
   String? _search;
 
@@ -22,6 +35,7 @@ class FilteredListController<F extends FilterData> with ChangeNotifier {
     }
 
     if (shouldNotify) {
+      _data = null;
       notifyListeners();
     }
   }
@@ -40,9 +54,41 @@ class FilteredListController<F extends FilterData> with ChangeNotifier {
     }
 
     if (shouldNotify) {
+      _data = null;
       notifyListeners();
     }
   }
+
+  Future<List<T>> fetch() {
+    return _data ??= onFetch(this);
+  }
+
+  Future<List<T>> reload() {
+    if (!_reloading && _data != null) {
+      _reloading = true;
+      _data = null;
+
+      final result = fetch().whenComplete(() {
+        // Throttling reload to avoid flickering
+        Future.delayed(const Duration(milliseconds: 40), () {
+          _reloading = false;
+        });
+      });
+
+      // The _data variable has changed in fetch(), listeners need to be notified
+      notifyListeners();
+
+      return result;
+    } else {
+      return _data!;
+    }
+  }
+
+  @override
+  bool operator ==(covariant FilteredListController other) => (search == other.search) && (filter == other.filter);
+
+  @override
+  int get hashCode => Object.hash(search, filter);
 
   @override
   String toString() =>

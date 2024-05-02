@@ -19,6 +19,18 @@ class DebugKitHttpLogEntry with ChangeNotifier {
     DebugKitHttpResponseInfo? response,
   }) : _response = response;
 
+  bool get isFinished => (_response != null);
+
+  String get status => isFinished ? '${_response!.statusCode} $_statusText' : '';
+
+  String get _statusText => switch (_response?.statusCode ?? -1) {
+        >= 0 && < 100 => 'n/a',
+        >= 100 && < 400 => 'OK',
+        _ => 'Fail',
+      };
+
+  Duration get elapsedTime => isFinished ? _response!.timestamp.difference(request.timestamp) : Duration.zero;
+
   @override
   bool operator ==(covariant DebugKitHttpLogEntry other) => request.hashCode == other.request.hashCode;
 

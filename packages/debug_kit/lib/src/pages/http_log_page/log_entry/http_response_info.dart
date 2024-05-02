@@ -22,6 +22,9 @@ class DebugKitHttpResponseInfo {
   /// The bytes comprising the body of this response.
   final Uint8List? bodyBytes;
 
+  /// Date and time when the response was received.
+  final DateTime timestamp;
+
   DebugKitHttpResponseInfo({
     required this.requestId,
     required this.statusCode,
@@ -30,5 +33,5 @@ class DebugKitHttpResponseInfo {
     this.headers = const {},
     this.isRedirect = false,
     this.bodyBytes,
-  });
+  }) : timestamp = DateTime.now();
 }
