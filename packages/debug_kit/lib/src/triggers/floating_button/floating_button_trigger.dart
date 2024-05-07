@@ -94,22 +94,21 @@ class _DebugKitFloatingButtonTriggerState extends State<DebugKitFloatingButtonTr
   @override
   Widget build(BuildContext context) {
     final prefStorage = DebugKitPrefs.maybeOf(context);
-    final screenInsets = widget.controller.buttonVisible ? MediaQuery.viewPaddingOf(context) : EdgeInsets.zero;
-    final screenSize =
-        screenInsets.deflateSize(widget.controller.buttonVisible ? MediaQuery.sizeOf(context) : Size.zero);
+    final screenInsets = MediaQuery.viewPaddingOf(context);
+    final screenSize = screenInsets.deflateSize(MediaQuery.sizeOf(context));
 
     return FutureBuilder(
       future: ready.future,
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
+        if ((snapshot.connectionState != ConnectionState.done)) {
           return const SizedBox.shrink();
         }
 
         final currentPosition = position ??
             Offset(
               (screenSize.width - DebugKitFloatingButton.buttonSize - 16).clamp(screenInsets.left, double.maxFinite),
-              (screenSize.height * 0.8) -
-                  (DebugKitFloatingButton.buttonSize / 2).clamp(screenInsets.top, double.maxFinite),
+              ((screenSize.height * 0.8) - (DebugKitFloatingButton.buttonSize / 2))
+                  .clamp(screenInsets.top, double.maxFinite),
             );
 
         return Movable(
