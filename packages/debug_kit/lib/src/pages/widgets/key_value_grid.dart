@@ -82,6 +82,7 @@ class _KeyValueTile extends StatelessWidget {
           children: [
             // Entry name & type
             Expanded(
+              flex: 2,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -99,9 +100,12 @@ class _KeyValueTile extends StatelessWidget {
 
             // Entry value
             const SizedBox(width: 20),
-            Text(
-              '$value',
-              style: (primaryTextStyle ?? const TextStyle()).merge(TextStyle(color: theme.colorScheme.primary)),
+            Expanded(
+              flex: 1,
+              child: Text(
+                '$value',
+                style: (primaryTextStyle ?? const TextStyle()).merge(TextStyle(color: theme.colorScheme.primary)),
+              ),
             ),
 
             // Remove button
