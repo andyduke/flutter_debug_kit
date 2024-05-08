@@ -89,6 +89,7 @@ class _MovableState extends State<Movable> {
     if (dx > width) {
       x = width.floorToDouble();
     }
+    x = x.roundToDouble();
 
     if (dy.floor() >= 0 && dy <= height) {
       y = dy.floorToDouble();
@@ -99,6 +100,7 @@ class _MovableState extends State<Movable> {
     if (dy > height) {
       y = height;
     }
+    y = y.roundToDouble();
   }
 
   /*
@@ -120,9 +122,9 @@ class _MovableState extends State<Movable> {
   }
   */
 
-  void _moveUpdate(double x, double y) {
-    var yDelta = y - startY;
-    var xDelta = x - startX;
+  void _moveUpdate(double newX, double newY) {
+    var yDelta = newY - startY;
+    var xDelta = newX - startX;
 
     moved = true;
 
@@ -130,8 +132,8 @@ class _MovableState extends State<Movable> {
     setState(() {});
   }
 
-  void _moveComplete(double x, double y) {
-    _moveUpdate(x, y);
+  void _moveComplete(double newX, double newY) {
+    _moveUpdate(newX, newY);
 
     widget.onMoveEnd?.call(Offset(x, y));
   }
