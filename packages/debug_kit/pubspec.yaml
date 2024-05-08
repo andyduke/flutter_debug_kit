@@ -13,11 +13,12 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.10.0
-  package_info_plus: ^5.0.1
+  # package_info_plus: ^5.0.1
+  package_info_plus: ^8.0.0
   shared_preferences: ^2.2.2
 
-dependency_overrides:
-  web: ^0.4.0
+# dependency_overrides:
+#   web: ^0.4.0
 
 dev_dependencies:
   flutter_test:
