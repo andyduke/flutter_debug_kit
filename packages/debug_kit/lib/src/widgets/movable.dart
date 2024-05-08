@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 typedef MovableCallback = void Function(Offset position);
 
 class Movable extends StatefulWidget {
-  static const defaultLongPressToMove = true;
+  // static const defaultLongPressToMove = true;
 
   final bool enabled;
   final Offset position;
@@ -16,12 +16,12 @@ class Movable extends StatefulWidget {
 
   final Widget child;
   final Widget movable;
-  final bool longPressToMove;
+  // final bool longPressToMove;
   final VoidCallback? onPressed;
-  final MovableCallback? onMoveStart;
-  final MovableCallback? onMoveUpdate;
+  // final MovableCallback? onMoveStart;
+  // final MovableCallback? onMoveUpdate;
   final MovableCallback? onMoveEnd;
-  final VoidCallback? onMoveCancel;
+  // final VoidCallback? onMoveCancel;
 
   const Movable({
     super.key,
@@ -31,12 +31,12 @@ class Movable extends StatefulWidget {
     required this.bounds,
     required this.child,
     required this.movable,
-    this.longPressToMove = defaultLongPressToMove,
+    // this.longPressToMove = defaultLongPressToMove,
     this.onPressed,
-    this.onMoveStart,
-    this.onMoveUpdate,
+    // this.onMoveStart,
+    // this.onMoveUpdate,
     this.onMoveEnd,
-    this.onMoveCancel,
+    // this.onMoveCancel,
   });
 
   @override
@@ -101,6 +101,7 @@ class _MovableState extends State<Movable> {
     }
   }
 
+  /*
   void _moveStart(double x, double y) {
     setState(() {
       startX = x;
@@ -117,6 +118,7 @@ class _MovableState extends State<Movable> {
   void _moveEnd() {
     widget.onMoveEnd?.call(Offset(x, y));
   }
+  */
 
   void _moveUpdate(double x, double y) {
     var yDelta = y - startY;
@@ -128,11 +130,19 @@ class _MovableState extends State<Movable> {
     setState(() {});
   }
 
+  void _moveComplete(double x, double y) {
+    _moveUpdate(x, y);
+
+    widget.onMoveEnd?.call(Offset(x, y));
+  }
+
+  /*
   Widget _buildGestureDetector() {
     late Widget gestureDetector;
 
     if (widget.longPressToMove) {
       gestureDetector = GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: widget.onPressed,
         onLongPressStart: (details) => _moveStart(details.localPosition.dx, details.localPosition.dy),
         onLongPressCancel: _moveCancel,
@@ -142,6 +152,7 @@ class _MovableState extends State<Movable> {
       );
     } else {
       gestureDetector = GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onLongPress: widget.onPressed,
         onPanStart: (details) => _moveStart(details.localPosition.dx, details.localPosition.dy),
         onPanCancel: _moveCancel,
@@ -165,6 +176,37 @@ class _MovableState extends State<Movable> {
           left: x,
           top: y,
           child: widget.enabled ? _buildGestureDetector() : widget.movable,
+        ),
+      ],
+    );
+  }
+  */
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        widget.child,
+
+        // Button
+        Overlay.wrap(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned(
+                left: x,
+                top: y,
+                child: widget.enabled
+                    ? Draggable(
+                        onDragEnd: (details) => _moveComplete(details.offset.dx, details.offset.dy),
+                        feedback: widget.movable,
+                        childWhenDragging: const SizedBox.shrink(),
+                        child: widget.movable,
+                      )
+                    : widget.movable,
+              ),
+            ],
+          ),
         ),
       ],
     );

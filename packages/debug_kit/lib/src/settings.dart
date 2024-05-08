@@ -29,7 +29,7 @@ class DebugKitSettings extends DebugKitBaseSettings {
   static final defaultTriggers = <DebugKitTrigger>{
     DebugKitFloatingButtonTrigger.setup(),
     DebugKitShortcutTrigger.setup(),
-    DebugKitGlyphTrigger.setup(),
+    // DebugKitGlyphTrigger.setup(), // TODO: Refactor - GestureDetector break InteractiveViewer pinch zoom
   };
 
   static const defaultButtonVisible = true;
