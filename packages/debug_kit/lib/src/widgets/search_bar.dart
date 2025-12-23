@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:debug_kit/src/theme/extensions/search_bar_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /*
 abstract interface class DebugKitSearchBarFilterItem<F> {

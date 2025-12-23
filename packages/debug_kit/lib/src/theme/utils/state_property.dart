@@ -6,6 +6,7 @@ abstract class StateProperty<T, S> {
   T resolve(Set<S> states);
 
   /// Linearly interpolate between two `S`.
+  @Deprecated('Implement lerp for each subtype separately.')
   static P? lerp<P extends StateProperty<T, S>, T, S>(
     P? a,
     P? b,

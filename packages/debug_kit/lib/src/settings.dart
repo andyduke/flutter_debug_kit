@@ -2,7 +2,7 @@ import 'package:debug_kit/src/pages/base_page.dart';
 import 'package:debug_kit/src/pages/general_page.dart';
 import 'package:debug_kit/src/pages/shared_prefs_page/shared_prefs_page.dart';
 import 'package:debug_kit/src/triggers/floating_button/floating_button_trigger.dart';
-import 'package:debug_kit/src/triggers/glyph/glyph_trigger.dart';
+// import 'package:debug_kit/src/triggers/glyph/glyph_trigger.dart';
 import 'package:debug_kit/src/triggers/shortcut_trigger.dart';
 import 'package:debug_kit/src/triggers/trigger.dart';
 import 'package:flutter/foundation.dart';

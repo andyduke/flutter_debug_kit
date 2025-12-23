@@ -6,18 +6,15 @@ import 'package:debug_kit/src/pages/log_page/models/log_controller.dart';
 import 'package:debug_kit/src/pages/log_page/models/log_history.dart';
 import 'package:debug_kit/src/pages/log_page/models/log_record.dart';
 import 'package:debug_kit/src/utils/string_ext.dart';
-import 'package:debug_kit/src/widgets/empty_list_view.dart';
 import 'package:debug_kit/src/widgets/filter_bar.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/controllers/filtered_list_controller.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/filtered_list_view.dart';
 import 'package:debug_kit/src/widgets/filtered_list_view/models/filter_data.dart';
-import 'package:debug_kit/src/widgets/list_view_builders/list_view_builders.dart';
 import 'package:debug_kit/src/widgets/search_field.dart';
 import 'package:debug_kit/src/widgets/sliver_center.dart';
 import 'package:debug_kit/src/widgets/toolbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class DebugKitPanelLogPage extends DebugKitPanelBasePage {
   static const String defaultName = 'log';

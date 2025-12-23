@@ -38,12 +38,23 @@ class CustomTabStateProperty<T> implements StateProperty<T, CustomTabState> {
   }
 
   static CustomTabStateProperty<T>? lerp<T>(
-    CustomTabStateProperty<T>? a,
+    CustomTabStateProperty<T> a,
     CustomTabStateProperty<T>? b,
     double t,
     T? Function(T?, T?, double) lerpFunction,
   ) {
-    return StateProperty.lerp<CustomTabStateProperty<T>, T, CustomTabState>(a, b, t, lerpFunction);
+    // return StateProperty.lerp<CustomTabStateProperty<T>, T, CustomTabState>(a, b, t, lerpFunction);
+
+    if (b == null) {
+      return a;
+    }
+
+    return CustomTabStateProperty<T>(
+      lerpFunction(a.resolve({}), b.resolve({}), t) as T,
+      hovered: lerpFunction(a.resolve({CustomTabState.hovered}), b.resolve({CustomTabState.hovered}), t) as T,
+      selected: lerpFunction(a.resolve({CustomTabState.selected}), b.resolve({CustomTabState.selected}), t) as T,
+      disabled: lerpFunction(a.resolve({CustomTabState.disabled}), b.resolve({CustomTabState.disabled}), t) as T,
+    );
   }
 }
 

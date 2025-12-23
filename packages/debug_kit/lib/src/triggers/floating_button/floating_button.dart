@@ -124,6 +124,7 @@ class _FloatingButtonStateProperty<T> extends StateProperty<T, DebugKitFloatingB
     return normal;
   }
 
+  /*
   static _FloatingButtonStateProperty<T>? lerp<T>(
     _FloatingButtonStateProperty<T>? a,
     _FloatingButtonStateProperty<T>? b,
@@ -132,4 +133,5 @@ class _FloatingButtonStateProperty<T> extends StateProperty<T, DebugKitFloatingB
   ) {
     return StateProperty.lerp<_FloatingButtonStateProperty<T>, T, DebugKitFloatingButtonState>(a, b, t, lerpFunction);
   }
+  */
 }
